@@ -1,114 +1,117 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, Image } from 'react-native';
-import { Stack} from 'expo-router';
-import {useFonts} from "expo-font";
+import { StyleSheet, Text, View, Image } from 'react-native';
+import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
 import * as React from 'react';
 
-
 export default function Root() {
   const [fontsLoaded] = useFonts({
-    "Custom":require("../assets/fonts/League.ttf")
-  })
+    Custom: require('../assets/fonts/League.ttf'),
+  });
 
   const [origin, setOrigin] = React.useState({
-    latitude: 28.662005864992164, 
-    longitude: -106.03918117853922
+    latitude: 28.662005864992164,
+    longitude: -106.03918117853922,
   });
 
   const [destination, setDestination] = React.useState({
-    latitude: 28.662005864992164, 
-    longitude: -106.03918117853922
-  })
+    latitude: 28.662005864992164,
+    longitude: -106.03918117853922,
+  });
 
   return (
-    
-  <View style={styles.bg}>
-
-        
-    <MapView 
-      style={styles.map}
-      initialRegion={{
-        latitude: origin.latitude,
-        longitude: origin.longitude,
-        latitudeDelta: 0.09,
-        longitudeDelta: 0.04,
-      }}>
-        
-       
-
-        <Marker coordinate={origin}  image={require('../assets/images/blankProf.png')}/> 
-
+    <View style={styles.bg}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: origin.latitude,
+          longitude: origin.longitude,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.04,
+        }}
+      >
+        <Marker
+          coordinate={origin}
+          image={require('../assets/images/blankProf.png')}
+        />
       </MapView>
 
       <View style={styles.titlebox}>
-          <Text style={styles.title}>TagMates</Text>
+        <Text style={styles.title}>TagMates</Text>
 
-          <View style={styles.imgCont}>
-          <Image source={require('../assets/images/people.png')} 
-          style={styles.image}
-          resizeMode="stretch"/>
+        <View style={styles.imgCont}>
+          <Image
+            source={require('../assets/images/people.png')}
+            style={styles.image}
+            resizeMode="stretch"
+          />
 
-          <Image source={require('../assets/images/chat.png')} 
-          style={[styles.image, styles.margin]}
-          resizeMode="stretch"/>
-          </View>
+          <Image
+            source={require('../assets/images/chat.png')}
+            style={[styles.image, styles.margin]}
+            resizeMode="stretch"
+          />
+        </View>
       </View>
 
       <View style={styles.barBox}>
-        
         <View>
-          <Image source={require('../assets/images/arrow.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/arrow.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
         </View>
 
         <View>
-          <Image source={require('../assets/images/mates.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/mates.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
           <Text style={styles.textMin}>Mates</Text>
         </View>
 
         <View>
-          <Image source={require('../assets/images/heart.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/heart.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
           <Text style={styles.textMin}>Taggie</Text>
         </View>
 
         <View>
-          <Image source={require('../assets/images/health.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/health.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
           <Text style={styles.textMin}>Health</Text>
         </View>
 
         <View>
-          <Image source={require('../assets/images/settings.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/settings.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
           <Text style={styles.textMin}>Settings</Text>
         </View>
 
         <View>
-          <Image source={require('../assets/images/blankProf.png')} 
-          style={styles.imgMin}
-          resizeMode="stretch"/>
+          <Image
+            source={require('../assets/images/blankProf.png')}
+            style={styles.imgMin}
+            resizeMode="stretch"
+          />
           <Text style={styles.textMin}>Profile</Text>
         </View>
-        
       </View>
-
-
-  </View>
-
-  
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   bg: {
     backgroundColor: '#FAF6F6',
     flex: 1,
@@ -122,14 +125,12 @@ const styles = StyleSheet.create({
   marker: {
     justifyContent: 'center',
     alignItems: 'center',
-
   },
 
   markerImage: {
     width: 40,
     height: 40,
     resizeMode: 'contain',
-
   },
 
   markerText: {
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     marginEnd: 60,
     padding: 10,
-    borderTopRightRadius: 40, 
+    borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
     elevation: 5,
     shadowColor: '#000',
@@ -161,9 +162,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     position: 'absolute',
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center' 
+    alignItems: 'center',
   },
 
   image: {
@@ -172,13 +173,13 @@ const styles = StyleSheet.create({
   },
 
   imgCont: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     padding: 6,
-    marginRight: 10
+    marginRight: 10,
   },
 
   margin: {
-    marginLeft: 20
+    marginLeft: 20,
   },
 
   barBox: {
@@ -186,32 +187,28 @@ const styles = StyleSheet.create({
     height: 60,
     width: 350,
     padding: 10,
-    borderRadius: 40, 
+    borderRadius: 40,
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     position: 'absolute',
-    flexDirection: 'row', 
+    flexDirection: 'row',
     justifyContent: 'space-between',
     bottom: 20,
     left: '5%',
-    right: '5%'
+    right: '5%',
   },
 
   imgMin: {
     width: 35,
     height: 35,
-
-  }, 
+  },
 
   textMin: {
     fontSize: 10,
     fontFamily: 'Custom',
-    color: 'black'
+    color: 'black',
   },
-
- 
-
 });
