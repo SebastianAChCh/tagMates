@@ -1,113 +1,101 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { useFonts } from 'expo-font';
-import MapView, { Marker } from 'react-native-maps';
-import * as React from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../configFirebase';
+import { LogInType } from '../types/LogIn';
 
 export default function Root() {
   const [fontsLoaded] = useFonts({
     Custom: require('../assets/fonts/League.ttf'),
   });
 
-  const [origin, setOrigin] = React.useState({
-    latitude: 28.662005864992164,
-    longitude: -106.03918117853922,
-  });
+  const [data, setData] = useState<LogInType>({ email: '', password: '' });
 
-  const [destination, setDestination] = React.useState({
-    latitude: 28.662005864992164,
-    longitude: -106.03918117853922,
-  });
+  const handleLogin = async () => {
+    try {
+      const userAuth = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      if (userAuth) {
+        alert('Inicio de sesion correcto');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <View style={styles.bg}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: origin.latitude,
-          longitude: origin.longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.04,
-        }}
-      >
-        <Marker
-          coordinate={origin}
-          image={require('../assets/images/blankProf.png')}
-        />
-      </MapView>
-
-      <View style={styles.titlebox}>
-        <Text style={styles.title}>TagMates</Text>
-
-        <View style={styles.imgCont}>
-          <Image
-            source={require('../assets/images/people.png')}
-            style={styles.image}
-            resizeMode="stretch"
-          />
-
-          <Image
-            source={require('../assets/images/chat.png')}
-            style={[styles.image, styles.margin]}
-            resizeMode="stretch"
-          />
+    <KeyboardAvoidingView
+      style={styles.bg}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View>
+        <View style={styles.titlebox}>
+          <Text style={styles.title}>TagMates</Text>
         </View>
+        <View style={styles.container}>
+          <Text style={styles.welcome}>Welcome!</Text>
+        </View>
+
+        <View style={styles.container}>
+          <View style={styles.box}>
+            <TextInput
+              style={styles.text}
+              placeholder="Email"
+              onChangeText={(e) => {
+                setData((oldData) => ({
+                  ...oldData,
+                  ['email']: e,
+                }));
+              }}
+            />
+          </View>
+
+          <View style={styles.box}>
+            <TextInput
+              style={styles.text}
+              placeholder="Password"
+              onChangeText={(e) => {
+                setData((oldData) => ({
+                  ...oldData,
+                  ['password']: e,
+                }));
+              }}
+            />
+          </View>
+
+          <View>
+            <Pressable
+              style={styles.loginbox}
+              onPress={() => {
+                handleLogin();
+              }}
+            >
+              <Text style={styles.textlog}>Log In</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.container2}>
+          <View>
+            <Text style={styles.text}>Forgot Password?</Text>
+          </View>
+
+          <View>
+            <Text style={styles.textreg}>Register</Text>
+          </View>
+        </View>
+
+        <Image
+          source={require('../assets/images/ManosPrietas.png')}
+          style={styles.image}
+          resizeMode="stretch"
+        ></Image>
       </View>
-
-      <View style={styles.barBox}>
-        <View>
-          <Image
-            source={require('../assets/images/arrow.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-        </View>
-
-        <View>
-          <Image
-            source={require('../assets/images/mates.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-          <Text style={styles.textMin}>Mates</Text>
-        </View>
-
-        <View>
-          <Image
-            source={require('../assets/images/heart.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-          <Text style={styles.textMin}>Taggie</Text>
-        </View>
-
-        <View>
-          <Image
-            source={require('../assets/images/health.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-          <Text style={styles.textMin}>Health</Text>
-        </View>
-
-        <View>
-          <Image
-            source={require('../assets/images/settings.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-          <Text style={styles.textMin}>Settings</Text>
-        </View>
-
-        <View>
-          <Image
-            source={require('../assets/images/blankProf.png')}
-            style={styles.imgMin}
-            resizeMode="stretch"
-          />
-          <Text style={styles.textMin}>Profile</Text>
-        </View>
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -118,42 +106,77 @@ const styles = StyleSheet.create({
     fontFamily: 'Custom',
   },
 
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-
-  marker: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  markerImage: {
-    width: 40,
-    height: 40,
-    resizeMode: 'contain',
-  },
-
-  markerText: {
-    color: 'black',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-
   title: {
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'Custom',
     color: '#00ABA1',
-    fontSize: 28,
+    fontSize: 30,
+  },
+
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+
+  container2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  box: {
+    width: 330,
+    height: 50,
+    backgroundColor: 'white',
+    margin: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  text: {
+    color: 'black',
+    textAlign: 'left',
+    margin: 10,
+  },
+
+  textlog: {
+    color: 'white',
+    textAlign: 'left',
+    fontFamily: 'Custom',
+    fontSize: 18,
+  },
+
+  textreg: {
+    color: '#00ABA1',
+    textAlign: 'left',
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    marginEnd: 20,
+    fontFamily: 'Custom',
+  },
+
+  welcome: {
+    fontFamily: 'Custom',
+    color: 'black',
+    fontSize: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 10,
   },
 
   titlebox: {
     backgroundColor: 'white',
-    height: 60,
-    width: 350,
-    marginTop: 35,
+    width: 160,
+    height: 45,
+    marginTop: 70,
     marginEnd: 60,
-    padding: 10,
+    padding: 20,
     borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
     elevation: 5,
@@ -161,54 +184,29 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+
+  loginbox: {
+    width: 330,
+    height: 40,
+    backgroundColor: '#00A79D',
+    margin: 10,
+    justifyContent: 'center',
     alignItems: 'center',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
 
   image: {
-    width: 40,
-    height: 30,
+    width: 390,
+    height: 320,
   },
 
-  imgCont: {
-    flexDirection: 'row',
-    padding: 6,
-    marginRight: 10,
-  },
-
-  margin: {
-    marginLeft: 20,
-  },
-
-  barBox: {
-    backgroundColor: 'white',
-    height: 60,
-    width: 350,
-    padding: 10,
-    borderRadius: 40,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    bottom: 20,
-    left: '5%',
-    right: '5%',
-  },
-
-  imgMin: {
-    width: 35,
-    height: 35,
-  },
-
-  textMin: {
-    fontSize: 10,
-    fontFamily: 'Custom',
-    color: 'black',
+  contImg: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
