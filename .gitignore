@@ -1,0 +1,6 @@
+.env
+.env.local
+node_modules
+tagmates-42c3a-firebase-adminsdk-sl49w-52aae60f26.json
+tagmates.json
+package-lock.json
