@@ -1,8 +1,16 @@
-export class Contacts {
-    private userID: string = '';
+import { dbFirestore as db } from '../firebaseAdmin'
 
-    constructor(userID: string) {
-        this.userID = userID;
+export class Contacts {
+
+    constructor() { }
+
+    public async getContact(email: string) {
+        try {
+            const Contacts = await db.collection('Contacts').where('email', '==', email).limit(1).get();
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
     }
 
     public async loadContacts() { }

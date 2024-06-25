@@ -33,15 +33,23 @@ export class Users {
 
   public async createUser() {
     try {
-      const creationUser = db.ref('Users').push()
-      await creationUser.set(this.info_users)
+      const userInfo = await this.getUser(this.info_users.email);
+      if (userInfo) return false;
     } catch (error) {
       console.error(error);
       throw new Error(String(error));
     }
 
     try {
-      const userInfo = await db.ref('Users').orderByChild('email').equalTo(this.info_users.email).once('value')
+      const creationUser = db.ref('Users').push();
+      await creationUser.set(this.info_users);
+    } catch (error) {
+      console.error(error);
+      throw new Error(String(error));
+    }
+
+    try {
+      const userInfo = await this.getUser(this.info_users.email);
       return userInfo;
     } catch (error) {
       console.error(error);
@@ -49,9 +57,9 @@ export class Users {
     }
   }
 
-  public async getUser(fullname: string) {
+  public async getUser(email: string) {
     try {
-      const response = await db.ref('Users').orderByChild('email').equalTo(fullname).once('value')
+      const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value')
       if (!response.exists()) {
         return 'That user does not exist'
       } else {
@@ -65,9 +73,9 @@ export class Users {
     }
   }
 
-  private async getUserId(fullname: string) {
+  private async getUserId(email: string) {
     try {
-      const response = await db.ref('Users').orderByChild('email').equalTo(fullname).once('value')
+      const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value')
       if (!response.exists()) {
         return 'That user does not exist'
       } else {
