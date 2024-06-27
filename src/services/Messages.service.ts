@@ -1,4 +1,5 @@
 import { dbFirestore as db } from '../firebaseAdmin';
+import { Message } from '../types/Messages';
 import { Contacts } from './Contacts.service';
 
 export class MessagesSocket {
@@ -15,7 +16,18 @@ export class MessagesSocket {
         try {
             if (sender === this.email) otherEmail = receiver;
             else otherEmail = sender;
+            const response = await this.Contacts.getContact(this.email, otherEmail);
+            if (response) {
 
+            }
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
+    }
+
+    public async saveMessages(data: Message) {
+        try {
 
         } catch (error) {
             console.error(error);
@@ -23,8 +35,14 @@ export class MessagesSocket {
         }
     }
 
-    public async loadMessages() {
-
+    public async loadMessages(id: string) {
+        try {
+            const Messages = await db.collection('Conversation').doc(id);
+            return Messages;
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
     }
 
 }
