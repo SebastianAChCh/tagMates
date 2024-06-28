@@ -6,6 +6,7 @@ import { createServer } from 'node:http'
 import SessionsRoutes from './routes/Sessions.routes';
 import Bans from './routes/Bans.routes';
 import Position from './routes/Position.routes';
+import Messages from './routes/Messages.routes'
 import { PORT } from './conf';
 import { dbRealTime } from './firebaseAdmin'
 import { Message } from './types/Messages'
@@ -32,6 +33,7 @@ app.use(
 app.use(SessionsRoutes);
 app.use(Bans);
 app.use(Position);
+app.use(Messages);
 
 //detects when a new user is created
 dbRealTime.ref('Users').on('child_added', (users) => {

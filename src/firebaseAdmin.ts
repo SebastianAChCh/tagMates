@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 config();
 
 import { initializeApp, applicationDefault } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getDatabase } from 'firebase-admin/database';
 
 initializeApp({
@@ -15,4 +15,4 @@ const dbFirestore = getFirestore();
 const dbRealTime = getDatabase();
 
 export default dbFirestore;
-export { dbFirestore, dbRealTime };
+export { dbFirestore, dbRealTime, Timestamp };

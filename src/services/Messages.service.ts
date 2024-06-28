@@ -11,24 +11,47 @@ export class MessagesSocket {
         this.Contacts = new Contacts();
     }
 
-    public async saveMessage(sender: string, receiver: string) {
+    public async saveMessages(sender: string, receiver: string, Message: Message) {
         let otherEmail: string = '';//it will contains the contact at which the user is talking
-        try {
-            if (sender === this.email) otherEmail = receiver;
-            else otherEmail = sender;
-            const response = await this.Contacts.getContact(this.email, otherEmail);
-            if (response) {
+        let contactExist: any[];
 
-            }
+        if (sender === this.email) otherEmail = receiver;
+        else otherEmail = sender;
+
+        try {
+            contactExist = await this.Contacts.getContact(this.email, otherEmail);
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
         }
+
+        if (contactExist.length < 1) {
+
+            const IdDoc = db.collection('Conversations').doc().id
+            try {
+                await db.collection('Conversations').doc(IdDoc).collection('Messages').add(Message);
+            } catch (error) {
+                console.error(error);
+                throw new Error(String(error));
+            }
+
+        } else {
+            const ID = await this.getMessagesId(this.email, otherEmail);
+
+            try {
+                await db.collection('Conversations').doc(ID).collection('Messages').add(Message);
+            } catch (error) {
+                console.error(error);
+                throw new Error(String(error));
+            }
+        }
     }
 
-    public async saveMessages(data: Message) {
+    //This method will return the id of the document where the messages are in the collection "Conversations"
+    public async getMessagesId(userA: string, userB: string) {
         try {
-
+            const resultMessagesID = await db.collection('MessagesID').doc(userA).collection('Contacts').where('User.Username', '==', userB).get()
+            return resultMessagesID.docs[0].data().User.ID;
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
@@ -37,8 +60,8 @@ export class MessagesSocket {
 
     public async loadMessages(id: string) {
         try {
-            const Messages = await db.collection('Conversation').doc(id);
-            return Messages;
+            // const Messages = await db.collection('Conversations').doc(id).collection('Messages').where();
+            // return Messages;
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
