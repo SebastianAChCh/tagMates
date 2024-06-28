@@ -11,39 +11,30 @@ export class MessagesSocket {
         this.Contacts = new Contacts();
     }
 
-    public async saveMessages(sender: string, receiver: string, Message: Message) {
+    public async saveMessages(Message: Message) {
         let otherEmail: string = '';//it will contains the contact at which the user is talking
-        let contactExist: any[];
 
-        if (sender === this.email) otherEmail = receiver;
-        else otherEmail = sender;
+        if (Message.sender === this.email) {
+            otherEmail = Message.receiver;
+        }
+        else {
+            otherEmail = Message.sender;
+        }
+
+        const contactExist = await this.Contacts.getContact(this.email, otherEmail);
+
+        let ID;
+        if (contactExist.length < 1) {
+            ID = db.collection('Conversations').doc().id
+        } else {
+            ID = await this.getMessagesId(this.email, otherEmail);//ID of the document where the messages are
+        }
 
         try {
-            contactExist = await this.Contacts.getContact(this.email, otherEmail);
+            await db.collection('Conversations').doc(ID).collection('Messages').add(Message);
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
-        }
-
-        if (contactExist.length < 1) {
-
-            const IdDoc = db.collection('Conversations').doc().id
-            try {
-                await db.collection('Conversations').doc(IdDoc).collection('Messages').add(Message);
-            } catch (error) {
-                console.error(error);
-                throw new Error(String(error));
-            }
-
-        } else {
-            const ID = await this.getMessagesId(this.email, otherEmail);
-
-            try {
-                await db.collection('Conversations').doc(ID).collection('Messages').add(Message);
-            } catch (error) {
-                console.error(error);
-                throw new Error(String(error));
-            }
         }
     }
 

@@ -3,6 +3,5 @@ export type Message = {
     receiver: string,
     message: string,
     type: string,
-    documentID: string
 }
 
