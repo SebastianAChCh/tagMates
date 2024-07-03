@@ -1,212 +1,125 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, KeyboardAvoidingView, Platform } from 'react-native';
-import { useFonts } from 'expo-font';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../configFirebase';
-import { LogInType } from '../types/LogIn';
+import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+import React from 'react';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function Root() {
+type ChatItemProps = {
+    item: {
+        imageUrl: any,  // Usamos 'any' porque la fuente es variable y local
+        name: string,
+        message: string,
+        time: string,
+    };
+};
+
+const ChatScreen = () => {
   const [fontsLoaded] = useFonts({
-    Custom: require('../assets/fonts/League.ttf'),
+    LeagueSpartan_800ExtraBold,
+    LeagueSpartan_600SemiBold,
+    LeagueSpartan_400Regular,
   });
 
-  const [data, setData] = useState<LogInType>({ email: '', password: '' });
+  if (!fontsLoaded) {
+    return <View style={styles.loadingContainer}><Text>Cargando...</Text></View>;
+  }
 
-  const handleLogin = async () => {
-    try {
-      const userAuth = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-      if (userAuth) {
-        alert('Inicio de sesion correcto');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const chats = [
+    { id: '1', name: 'Elia Muñoz', message: 'Usted está reprobado', time: '2:57 p.m.', imageUrl: require('../assets/friend1.png') },
+    { id: '2', name: 'Dafnis Villagrán', message: 'Esto está muy candente chavo', time: '1:37 p.m.', imageUrl: require('../assets/friend2.png') },
+    { id: '3', name: 'Nuvia González', message: 'Envía un mensaje a tu nuevo mate', time: '2:57 p.m.', imageUrl: require('../assets/friend1.png') },
+  ];
+
+  const renderItem = ({ item }: ChatItemProps) => (
+    <TouchableOpacity
+      style={styles.chatItem}
+      activeOpacity={0.6}
+      onPress={() => console.log('Chat presionado')}
+    >
+      <Image source={item.imageUrl} style={styles.image} />
+      <View style={styles.chatInfo}>
+        <View style={styles.chatNameAndTime}>
+          <Text style={[styles.chatName, { fontFamily: 'LeagueSpartan_600SemiBold' }]}>{item.name}</Text>
+          <Text style={[styles.chatTime, { fontFamily: 'LeagueSpartan_400Regular' }]}>{item.time}</Text>
+        </View>
+        <Text style={[styles.chatMessage, { fontFamily: 'LeagueSpartan_400Regular' }]}>{item.message}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.bg}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View>
-        <View style={styles.titlebox}>
-          <Text style={styles.title}>TagMates</Text>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.welcome}>Welcome!</Text>
-        </View>
-
-        <View style={styles.container}>
-          <View style={styles.box}>
-            <TextInput
-              style={styles.text}
-              placeholder="Email"
-              onChangeText={(e) => {
-                setData((oldData) => ({
-                  ...oldData,
-                  ['email']: e,
-                }));
-              }}
-            />
-          </View>
-
-          <View style={styles.box}>
-            <TextInput
-              style={styles.text}
-              placeholder="Password"
-              onChangeText={(e) => {
-                setData((oldData) => ({
-                  ...oldData,
-                  ['password']: e,
-                }));
-              }}
-            />
-          </View>
-
-          <View>
-            <Pressable
-              style={styles.loginbox}
-              onPress={() => {
-                handleLogin();
-              }}
-            >
-              <Text style={styles.textlog}>Log In</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={styles.container2}>
-          <View>
-            <Text style={styles.text}>Forgot Password?</Text>
-          </View>
-
-          <View>
-            <Text style={styles.textreg}>Register</Text>
-          </View>
-        </View>
-
-        <Image
-          source={require('../assets/images/ManosPrietas.png')}
-          style={styles.image}
-          resizeMode="stretch"
-        ></Image>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Chats</Text>
+        <Icon name="user-friends" size={24} color="#000" />
       </View>
-    </KeyboardAvoidingView>
+      <FlatList
+        data={chats}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.listContentContainer}
+      />
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  bg: {
-    backgroundColor: '#FAF6F6',
-    flex: 1,
-    fontFamily: 'Custom',
-  },
-
-  title: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Custom',
-    color: '#00ABA1',
-    fontSize: 30,
-  },
-
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flex: 1,
+    backgroundColor: 'white',
   },
-
-  container2: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  title: {
+    fontSize: 35,
+    color: '#00A19D',
+    marginBottom: 16,
+  },
+  chatItem: {
+    flexDirection: 'row',
     padding: 10,
-  },
-  box: {
-    width: 330,
-    height: 50,
     backgroundColor: 'white',
-    margin: 10,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
-  text: {
-    color: 'black',
-    textAlign: 'left',
-    margin: 10,
-  },
-
-  textlog: {
-    color: 'white',
-    textAlign: 'left',
-    fontFamily: 'Custom',
-    fontSize: 18,
-  },
-
-  textreg: {
-    color: '#00ABA1',
-    textAlign: 'left',
-    fontSize: 18,
-    textDecorationLine: 'underline',
-    marginEnd: 20,
-    fontFamily: 'Custom',
-  },
-
-  welcome: {
-    fontFamily: 'Custom',
-    color: 'black',
-    fontSize: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-
-  titlebox: {
-    backgroundColor: 'white',
-    width: 160,
-    height: 45,
-    marginTop: 70,
-    marginEnd: 60,
-    padding: 20,
-    borderTopRightRadius: 40,
-    borderBottomRightRadius: 40,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-
-  loginbox: {
-    width: 330,
-    height: 40,
-    backgroundColor: '#00A79D',
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-
   image: {
-    width: 390,
-    height: 320,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
-
-  contImg: {
+  chatInfo: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  chatNameAndTime: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
+  chatName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  chatMessage: {
+    fontSize: 16,
+    color: 'gray',
+    marginTop: 4,
+  },
+  chatTime: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  listContentContainer: {
+    paddingBottom: 10,
+  }
 });
+
+export default ChatScreen;
