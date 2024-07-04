@@ -3,13 +3,14 @@ import {
     FlatList,
     Image,
     KeyboardAvoidingView,
+    Modal,
     Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -21,6 +22,7 @@ interface Message {
 const ChatScreen: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [showActions, setShowActions] = useState<boolean>(false);
 
   const sendMessage = () => {
     if (message.trim().length > 0) {
@@ -31,11 +33,8 @@ const ChatScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
         <View style={styles.header}>
           <TouchableOpacity>
             <Icon name="chevron-left" size={20} color="#000" />
@@ -50,17 +49,13 @@ const ChatScreen: React.FC = () => {
 
         <FlatList
           data={messages}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.messageBox}>
-              <Text style={styles.messageText}>{item.text}</Text>
-            </View>
-          )}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => <View style={styles.messageBox}><Text style={styles.messageText}>{item.text}</Text></View>}
           style={styles.messageArea}
         />
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowActions(true)}>
             <Icon name="plus" size={24} color="#000" />
           </TouchableOpacity>
           <TextInput
@@ -74,11 +69,42 @@ const ChatScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showActions}
+        onRequestClose={() => setShowActions(false)}
+      >
+        <TouchableOpacity style={styles.modalBackdrop} onPress={() => setShowActions(false)}>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Icon name="file-photo-o" size={24} color="#000" />
+              <Text>Fotos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Icon name="camera" size={24} color="#000" />
+              <Text>Cámara</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Icon name="file" size={24} color="#000" />
+              <Text>Documento</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  flexOne: {
+    flex: 1
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -122,11 +148,29 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     backgroundColor: '#f0f0f0',
     borderRadius: 25,
     marginRight: 10,
   },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  actionsContainer: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  actionButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 60,
+  }
 });
 
 export default ChatScreen;
