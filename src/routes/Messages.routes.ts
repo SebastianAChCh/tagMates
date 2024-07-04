@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { loadMessages, saveMessages } from './controllers/Messages.controller';
+import { loadMessages, saveTextMessages, saveFileMessages } from './controllers/Messages.controller';
 
 const router = Router();
 
-router.post('/saveMessage', saveMessages);
-router.get('/loadMessages', loadMessages);
+router.post('/saveTextMessage', saveTextMessages);
+router.post('/saveFileMessage', saveFileMessages);
+router.post('/loadMessages', loadMessages);
 
 export default router;

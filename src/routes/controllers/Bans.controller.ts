@@ -1,4 +1,4 @@
-import db from '../../firebaseAdmin';
+import db from '../../configurations/firebaseAdmin';
 import { Request, Response } from 'express';
 
 //This arrow function checks if the user is ban from the app in firestore

@@ -1,6 +1,7 @@
-import { dbFirestore as db } from '../firebaseAdmin';
+import { dbFirestore as db } from '../configurations/firebaseAdmin';
 import { Message } from '../types/Messages';
 import { Contacts } from './Contacts.service';
+import { v7 as RandomID } from 'uuid';
 
 export class MessagesSocket {
     private email: string;
@@ -12,22 +13,18 @@ export class MessagesSocket {
     }
 
     public async saveMessages(Message: Message) {
-        let otherEmail: string = '';//it will contains the contact at which the user is talking
+        let user: string = '';//It w contains the contact at which the user is talking
 
-        if (Message.sender === this.email) {
-            otherEmail = Message.receiver;
-        }
-        else {
-            otherEmail = Message.sender;
-        }
+        if (Message.sender === this.email) user = Message.receiver;
+        else user = Message.sender;
 
-        const contactExist = await this.Contacts.getContact(this.email, otherEmail);
+        let ID: string;
 
-        let ID;
-        if (contactExist.length < 1) {
-            ID = db.collection('Conversations').doc().id
-        } else {
-            ID = await this.getMessagesId(this.email, otherEmail);//ID of the document where the messages are
+        ID = await this.getConversationId(user);
+
+        if (!ID) {
+            ID = RandomID();//Generating and ID, it needs to be replaced in a future
+            this.saveConversationID(user, ID);//Saving also the id of the document where the messages are
         }
 
         try {
@@ -38,21 +35,54 @@ export class MessagesSocket {
         }
     }
 
-    //This method will return the id of the document where the messages are in the collection "Conversations"
-    public async getMessagesId(userA: string, userB: string) {
+    private async saveConversationID(user: string, ID: string) {
         try {
-            const resultMessagesID = await db.collection('MessagesID').doc(userA).collection('Contacts').where('User.Username', '==', userB).get()
-            return resultMessagesID.docs[0].data().User.ID;
+            await db.collection('ConversationID').doc(this.email).collection('Contacts').add({
+                'Username': user,
+                'Id': ID
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
+
+        try {
+            await db.collection('ConversationID').doc(user).collection('Contacts').add({
+                'Username': this.email,
+                'Id': ID
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
+
+    }
+
+    //This method will return the id of the document where the messages are in the collection "Conversations"
+    public async getConversationId(user: string) {
+        try {
+            const resultMessagesID = await db.collection('ConversationID').doc(this.email).collection('Contacts').where('Username', '==', user).get();
+            if (resultMessagesID.docs.length < 1) {
+                return null;
+            }
+
+            return resultMessagesID.docs[0].data().Id;
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
         }
     }
 
-    public async loadMessages(id: string) {
+    public async loadMessages(otherUser: string) {
+        const conversationID = await this.getConversationId(otherUser);
+        let messages: any;
         try {
-            // const Messages = await db.collection('Conversations').doc(id).collection('Messages').where();
-            // return Messages;
+            messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('sender', '==', otherUser).get();
+            if (!messages) {
+                messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('receiver', '==', otherUser).get();
+            }
+
+            return messages
         } catch (error) {
             console.error(error);
             throw new Error(String(error));

@@ -1,38 +1,41 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import busboy from 'connect-busboy';
 import { Server, Socket } from 'socket.io'
 import { createServer } from 'node:http'
 import SessionsRoutes from './routes/Sessions.routes';
 import Bans from './routes/Bans.routes';
 import Position from './routes/Position.routes';
 import Messages from './routes/Messages.routes'
-import { PORT } from './conf';
-import { dbRealTime } from './firebaseAdmin'
+import { PORT } from './configurations/conf';
+import { dbRealTime } from './configurations/firebaseAdmin'
 import { Message } from './types/Messages'
 import { usersSocket } from './types/Users';
+import Contacts from './routes/Contacts.routes'
 
 const app = express();
 const nodeServer = createServer(app);
 const socketIo = new Server(nodeServer, {
-  connectionStateRecovery: {},
-  maxHttpBufferSize: 5e8,
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 300000,
+  },
+  maxHttpBufferSize: 5e8
 });
+
 
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.text());
-app.use(
-  express.urlencoded({
-    extended: false,
-  })
-);
+app.use(express.urlencoded({ extended: false }));
+app.use(busboy());
 
 //routes
 app.use(SessionsRoutes);
 app.use(Bans);
 app.use(Position);
+app.use(Contacts);
 app.use(Messages);
 
 //detects when a new user is created
@@ -54,9 +57,7 @@ const addUser = (username: string, socketId: string) => !Users.some((user: users
 //Function to eliminate the users when disconnect from the chat
 const deleteUsers = (socketId: string) => (Users = Users.filter((user: usersSocket) => user.socketId !== socketId));
 
-//setting up of socket.io
 socketIo.on('connection', (serverIo: Socket) => {
-
   serverIo.on('connected', (email) => {
     addUser(email, serverIo.id);
   });
@@ -75,7 +76,7 @@ socketIo.on('connection', (serverIo: Socket) => {
     switch (message.type) {
       case 'Text':
         break;
-      case 'Img':
+      case 'File':
         break;
       default:
         console.error('There was an error, the server cannot manage that kind of messages');

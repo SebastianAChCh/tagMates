@@ -1,4 +1,4 @@
-import { dbRealTime as db } from '../firebaseAdmin';
+import { dbRealTime as db } from '../configurations/firebaseAdmin';
 import { Coordinates, UsersModel } from '../types/Users';
 
 export class Users {
