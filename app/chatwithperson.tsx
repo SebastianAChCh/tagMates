@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import {
-    FlatList,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList, Image, KeyboardAvoidingView, Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StatusBar
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -31,7 +29,7 @@ const ChatScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.AndroidSafeArea}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -127,6 +125,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 10,
   },
+
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  }, 
 });
 
 export default ChatScreen;

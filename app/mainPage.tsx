@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
 import * as React from 'react';
 
-export default function Root() {
+export default function HomeScreen() {
   const [fontsLoaded] = useFonts({
     Custom: require('../assets/fonts/League.ttf'),
   });

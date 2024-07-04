@@ -1,19 +1,20 @@
+// LoginScreen.js
+import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
-    LeagueSpartan_800ExtraBold, // Cargando la fuente League Spartan ExtraBold 800
+    LeagueSpartan_800ExtraBold,
   });
 
   if (!fontsLoaded) {
-    return <View style={styles.container}><Text>Cargando...</Text></View>; // Pantalla de carga mientras las fuentes se cargan
+    return <View style={styles.container}><Text>Cargando...</Text></View>;
   }
-  
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.headerContainer}>
         <View style={styles.logoContainer}>
           <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
@@ -31,7 +32,10 @@ export default function LoginScreen() {
           placeholder="Contraseña"
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Home')}
+        >
           <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Iniciar sesión</Text>
         </TouchableOpacity>
         <View style={styles.footer}>
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
     alignItems: 'flex-start',
-    paddingHorizontal: 0, // No padding to align to the left edge
+    paddingHorizontal: 0,
     marginBottom: 30,
   },
   logoContainer: {
@@ -66,8 +70,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     paddingHorizontal: 25,
     paddingVertical: 7,
-    elevation: 3, // for Android shadow
-    shadowColor: '#000', // for iOS shadow
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -99,6 +103,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderWidth: 1,
     borderColor: '#E0E0E0',
+  },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   button: {
     width: '100%',
