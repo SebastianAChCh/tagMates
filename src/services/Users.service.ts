@@ -1,5 +1,5 @@
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { Coordinates, UsersModel } from '../types/Users';
+import { UsersModel } from '../types/Users';
 
 export class Users {
   private info_users: any = {};
@@ -32,13 +32,8 @@ export class Users {
   }
 
   public async createUser() {
-    try {
-      const userInfo = await this.getUser(this.info_users.email);
-      if (userInfo) return false;
-    } catch (error) {
-      console.error(error);
-      throw new Error(String(error));
-    }
+    const userInfo = await this.getUser(this.info_users.email);
+    if (userInfo !== 'That user does not exist') return false;
 
     try {
       const creationUser = db.ref('Users').push();
@@ -61,7 +56,7 @@ export class Users {
     try {
       const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value')
       if (!response.exists()) {
-        return 'That user does not exist'
+        return 'That user does not exist';
       } else {
         const users = response.val();
         const userId = Object.keys(users)[0];
@@ -73,11 +68,11 @@ export class Users {
     }
   }
 
-  private async getUserId(email: string) {
+  public async getUserId(email: string) {
     try {
       const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value')
       if (!response.exists()) {
-        return 'That user does not exist'
+        return 'That user does not exist';
       } else {
         const users = response.val();
         return Object.keys(users)[0];
@@ -88,21 +83,4 @@ export class Users {
     }
   }
 
-  async updateCoordinates(coordinates: Coordinates, email: string) {
-    let ID;
-    try {
-      ID = await this.getUserId(email);
-    } catch (error) {
-      console.error(error);
-      throw new Error(String(error));
-    }
-
-    try {
-      const newCoordinates = { coordinates }
-      await db.ref('Users/' + ID).update(newCoordinates);
-    } catch (error) {
-      console.error(error);
-      throw new Error(String(error));
-    }
-  }
 }

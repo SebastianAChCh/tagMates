@@ -1,4 +1,4 @@
-import { dbFirestore as db } from '../configurations/firebaseAdmin';
+import { dbFirestore as db, Timestamp } from '../configurations/firebaseAdmin';
 import { Message } from '../types/Messages';
 import { Contacts } from './Contacts.service';
 import { v7 as RandomID } from 'uuid';
@@ -28,7 +28,7 @@ export class MessagesSocket {
         }
 
         try {
-            await db.collection('Conversations').doc(ID).collection('Messages').add(Message);
+            await db.collection('Conversations').doc(ID).collection('Messages').add({ ...Message, date: Timestamp.now() });
         } catch (error) {
             console.error(error);
             throw new Error(String(error));
@@ -73,16 +73,18 @@ export class MessagesSocket {
         }
     }
 
-    public async loadMessages(otherUser: string) {
-        const conversationID = await this.getConversationId(otherUser);
+    public async loadMessages(user: string) {
+        const conversationID = await this.getConversationId(user);
         let messages: any;
+
         try {
-            messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('sender', '==', otherUser).get();
+            messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('sender', '==', user).get();
+
             if (!messages) {
-                messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('receiver', '==', otherUser).get();
+                messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('receiver', '==', user).get();
             }
 
-            return messages
+            return messages;
         } catch (error) {
             console.error(error);
             throw new Error(String(error));

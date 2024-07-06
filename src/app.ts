@@ -12,7 +12,10 @@ import { PORT } from './configurations/conf';
 import { dbRealTime } from './configurations/firebaseAdmin'
 import { Message } from './types/Messages'
 import { usersSocket } from './types/Users';
-import Contacts from './routes/Contacts.routes'
+import Contacts from './routes/Contacts.routes';
+import { checkResponseType, RequestsType } from './types/Requests';
+import { Requests } from './services/Requests.service';
+import { Positions } from './services/Positions.service';
 
 const app = express();
 const nodeServer = createServer(app);
@@ -38,16 +41,6 @@ app.use(Position);
 app.use(Contacts);
 app.use(Messages);
 
-//detects when a new user is created
-dbRealTime.ref('Users').on('child_added', (users) => {
-  console.log(users.val());
-}, (errorObject) => console.log('The read failed: ' + errorObject.name));
-
-//detects when the position of a user has changed
-dbRealTime.ref('Users').on('child_changed', (users) => {
-  console.log(users.val());
-}, (errorObject) => console.log('The read failed: ' + errorObject.name));
-
 //Users online in the chat
 let Users: usersSocket[] = [];
 
@@ -58,12 +51,53 @@ const addUser = (username: string, socketId: string) => !Users.some((user: users
 const deleteUsers = (socketId: string) => (Users = Users.filter((user: usersSocket) => user.socketId !== socketId));
 
 socketIo.on('connection', (serverIo: Socket) => {
+  const requests = new Requests();
   serverIo.on('connected', (email) => {
     addUser(email, serverIo.id);
   });
 
   serverIo.on('disconnect', () => {
     deleteUsers(serverIo.id);
+  });
+
+  //detects when a new user is created
+  dbRealTime.ref('Users').on('child_added', (users) => {
+    console.log('child_added', users.val());
+  }, (errorObject) => console.log('The read failed: ' + errorObject.name));
+
+  //detects when the position of a user has changed
+  dbRealTime.ref('Users').on('child_changed', (users) => {
+    const position = new Positions();
+
+    Users.map(async (user) => {
+      const coord = await position.getCoordinatesUser(user.user);
+
+      //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
+      const isNear = position.calculateDistance({ coordinates1: coord, coordinates2: users.val().coordinates });
+    });
+  }, (errorObject) => console.log('The read failed: ' + errorObject.name));
+
+  //when the user send the request it'll be sent to socket.io and will be send through it to tell at the user if is connected in that moment that a new request has came otherwise
+  //the request will be saved so that the user can accepted or rejected
+  serverIo.on('Request', (data: RequestsType) => {
+    let acceptRequest: string = '';
+    Users.forEach(user => {
+      if (user.user === data.receiver) {
+        socketIo.to(user.socketId).emit('RequestUser', acceptRequest);
+        //the request will be saved in the database just in case the user does not accept it immediately
+        requests.addRequest({ sender: data.sender, receiver: data.receiver });
+      }
+    });
+  });
+
+  serverIo.on('ReqAccRej', (data: checkResponseType) => {
+    Users.forEach(user => {
+      if (user.user === data.receiver) {
+        requests.checkResponse({ response: data.response, receiver: data.receiver, sender: data.sender });
+        // Implementation of a method with socket.io that tells the user if it request was either rejected or accepted
+        socketIo.to(user.socketId).emit('ResponseRequest', { response: data.response });
+      }
+    });
   });
 
   serverIo.on('Message', (message: Message) => {
@@ -73,19 +107,9 @@ socketIo.on('connection', (serverIo: Socket) => {
       }
     })
 
-    switch (message.type) {
-      case 'Text':
-        break;
-      case 'File':
-        break;
-      default:
-        console.error('There was an error, the server cannot manage that kind of messages');
-        break;
-    }
   });
 });
 
-//The port where the server is active
 nodeServer.listen(PORT, () => {
   console.log('Listen on port', PORT);
 });

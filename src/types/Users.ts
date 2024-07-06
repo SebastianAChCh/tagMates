@@ -1,3 +1,5 @@
+import { Coordinates } from './Positions'
+
 export type UsersModel = {
     fullname: string,
     email: string,
@@ -11,13 +13,6 @@ export type UsersModel = {
     rating: number,
     Vibration_proximity: boolean,
     range: range
-};
-
-export type Coordinates = {
-    latitude: number,
-    longitude: number,
-    latitudeDelta: number,
-    longitudeDelta: number,
 };
 
 export type range = {
