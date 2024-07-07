@@ -1,5 +1,5 @@
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { UsersModel } from '../types/Users';
+import { UserNewInfo, UsersModel } from '../types/Users';
 
 export class Users {
   private info_users: any = {};
@@ -83,4 +83,25 @@ export class Users {
     }
   }
 
+  public async updateInformation(newInformation: UserNewInfo) {
+    const userID = this.getUserId(newInformation.email);
+
+    try {
+      await db.ref('Users/' + userID).update(newInformation.userNewInfo);
+    } catch (error) {
+      console.error(error);
+      throw new Error(String(error));
+    }
+  }
+
+  public async deleteUser(email: string) {
+    const userID = this.getUserId(email);
+
+    try {
+      await db.ref('Users/' + userID).remove();
+    } catch (error) {
+      console.error(error);
+      throw new Error(String(error));
+    }
+  }
 }

@@ -15,6 +15,11 @@ export type UsersModel = {
     range: range
 };
 
+export type UserNewInfo = {
+    userNewInfo: Partial<UsersModel>
+    email: string
+};
+
 export type range = {
     min: string,
     max: string

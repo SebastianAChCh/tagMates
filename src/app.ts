@@ -11,7 +11,7 @@ import Messages from './routes/Messages.routes'
 import { PORT } from './configurations/conf';
 import { dbRealTime } from './configurations/firebaseAdmin'
 import { Message } from './types/Messages'
-import { usersSocket } from './types/Users';
+import { UsersModel, usersSocket } from './types/Users';
 import Contacts from './routes/Contacts.routes';
 import { checkResponseType, RequestsType } from './types/Requests';
 import { Requests } from './services/Requests.service';
@@ -50,8 +50,24 @@ const addUser = (username: string, socketId: string) => !Users.some((user: users
 //Function to eliminate the users when disconnect from the chat
 const deleteUsers = (socketId: string) => (Users = Users.filter((user: usersSocket) => user.socketId !== socketId));
 
+//This method is used when a user updated their coordinates or when a new user is added
+const userCoord = (users: UsersModel) => {
+  const userIsNear: UsersModel[] | null = [];
+  const position = new Positions();
+
+  Users.map(async (user) => {
+    const coord = await position.getCoordinatesUser(user.user);
+
+    //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
+    const isNear = position.calculateDistance({ coordinates1: coord, coordinates2: users.coordinates });
+
+    if (isNear) userIsNear.push(users);
+  });
+}
+
 socketIo.on('connection', (serverIo: Socket) => {
   const requests = new Requests();
+
   serverIo.on('connected', (email) => {
     addUser(email, serverIo.id);
   });
@@ -62,20 +78,13 @@ socketIo.on('connection', (serverIo: Socket) => {
 
   //detects when a new user is created
   dbRealTime.ref('Users').on('child_added', (users) => {
-    console.log('child_added', users.val());
-  }, (errorObject) => console.log('The read failed: ' + errorObject.name));
+    userCoord(users.val());
+  }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //detects when the position of a user has changed
   dbRealTime.ref('Users').on('child_changed', (users) => {
-    const position = new Positions();
-
-    Users.map(async (user) => {
-      const coord = await position.getCoordinatesUser(user.user);
-
-      //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
-      const isNear = position.calculateDistance({ coordinates1: coord, coordinates2: users.val().coordinates });
-    });
-  }, (errorObject) => console.log('The read failed: ' + errorObject.name));
+    userCoord(users.val());
+  }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //when the user send the request it'll be sent to socket.io and will be send through it to tell at the user if is connected in that moment that a new request has came otherwise
   //the request will be saved so that the user can accepted or rejected
