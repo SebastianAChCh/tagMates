@@ -1,6 +1,6 @@
 import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React from 'react';
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 type ChatItemProps = {
@@ -47,7 +47,7 @@ const ChatScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Chats</Text>
         <Icon name="user-friends" size={24} color="#000" />
@@ -63,9 +63,10 @@ const ChatScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  AndroidSafeArea: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   loadingContainer: {
     flex: 1,

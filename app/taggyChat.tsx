@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Message {
@@ -7,7 +7,7 @@ interface Message {
   text: string;
 }
 
-const ChatScreen: React.FC = () => {
+const TaggyScreen: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
@@ -21,18 +21,11 @@ const ChatScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.AndroidSafeArea}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
+      <Text style={styles.headerTitle}>Taggy</Text>
         <View style={styles.header}>
-          <TouchableOpacity>
-            <Icon name="chevron-left" size={20} color="#000" />
-          </TouchableOpacity>
-          <Image source={require('../assets/friend1.png')} style={styles.avatar} />
-          <Text style={styles.username}>Elia Muñoz</Text>
-          <Text style={styles.status}>Online</Text>
-          <TouchableOpacity style={styles.icon}>
-            <Icon name="user-friends" size={24} color="#000" />
-          </TouchableOpacity>
+          <Image source={require('../assets/images/ron.jpeg')} style={styles.avatar} />
         </View>
 
         <FlatList
@@ -43,9 +36,8 @@ const ChatScreen: React.FC = () => {
         />
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => setShowActions(true)}>
-            <Icon name="plus" size={24} color="#000" />
-          </TouchableOpacity>
+        
+            
           <TextInput
             style={styles.input}
             value={message}
@@ -58,55 +50,44 @@ const ChatScreen: React.FC = () => {
         </View>
       </KeyboardAvoidingView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showActions}
-        onRequestClose={() => setShowActions(false)}
-      >
-        <TouchableOpacity style={styles.modalBackdrop} onPress={() => setShowActions(false)}>
-          <View style={styles.actionsContainer}>
-            <TouchableOpacity style={styles.actionButton}>
-              <Icon name="file-photo-o" size={24} color="#000" />
-              <Text>Fotos</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Icon name="camera" size={24} color="#000" />
-              <Text>Cámara</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
-              <Icon name="file" size={24} color="#000" />
-              <Text>Documento</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
+    AndroidSafeArea: {
+        flex: 1,
+        backgroundColor: "white",
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+      },
   flexOne: {
     flex: 1
   },
+
+  headerTitle: {
+    fontFamily: 'LeagueSpartan_800ExtraBold', 
+    fontSize: 35, 
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 20,
+    color: '#00A19D',
+    marginLeft: 20
+  },
   header: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     padding: 10,
     backgroundColor: '#fff',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
     marginHorizontal: 10,
+    elevation: 50
   },
   username: {
-    flex: 1,
     fontWeight: 'bold',
   },
   status: {
@@ -161,4 +142,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ChatScreen;
+export default TaggyScreen;

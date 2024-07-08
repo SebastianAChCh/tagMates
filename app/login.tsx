@@ -1,4 +1,3 @@
-// LoginScreen.js
 import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
@@ -40,7 +39,7 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
         <View style={styles.footer}>
           <Text style={[styles.forgotPasswordText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>¿Olvidaste tu contraseña?</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={[styles.registerText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Regístrame</Text>
           </TouchableOpacity>
         </View>

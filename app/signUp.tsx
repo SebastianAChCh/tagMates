@@ -1,168 +1,172 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, Image } from 'react-native';
-import { Stack} from 'expo-router';
-import {useFonts} from "expo-font"
+// LoginScreen.js
+import * as React from 'react';
+import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
+import { useFonts } from 'expo-font';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native';
 
-export default function Root() {
+export default function SignUp({ navigation }) {
   const [fontsLoaded] = useFonts({
-    "Custom":require("../assets/fonts/League.ttf")
-  })
+    LeagueSpartan_800ExtraBold,
+  });
+
+  if (!fontsLoaded) {
+    return <View style={styles.container}><Text>Cargando...</Text></View>;
+  }
 
   return (
-    
-  <View style={styles.bg}>
-    <View style={styles.titlebox}>
-      <Text style={styles.title}>TagMates</Text>
-    </View>
-  <View style={styles.container}>
-    <Text  style={styles.welcome}>Sign Up</Text>
-  </View>
+    <SafeAreaView style={styles.AndroidSafeArea}>
+      <View style={styles.headerContainer}>
+        <View style={styles.logoContainer}>
+          <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
+        </View>
+      </View>
+      <View style={styles.content}>
+        <Text style={[styles.welcomeText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Sign Up</Text>
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Name(s)"
+          secureTextEntry
+        />
 
-<View style={styles.container}>
-  <View style={styles.box}>
-    <TextInput style={styles.text} placeholder='Name(s)' />
-  </View>
-  
-  <View style={styles.box}>
-    <TextInput style={styles.text} placeholder='Lastname' /> 
-  </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name(s)"
+          secureTextEntry
+        />
 
-  <View style={styles.box}>
-    <TextInput style={styles.text} placeholder='Email' /> 
-  </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+        />
 
-  <View style={styles.box}>
-    <TextInput style={styles.text} placeholder='Phone Number' /> 
-  </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry
+        />
 
-  <View>
-    <Pressable style={styles.loginbox}  onPress={() => alert('You pressed a button.')}>
-      <Text style={styles.textlog}>Sign Up</Text>
-    </Pressable>
-  </View>
-
-</View>
-
-
-
-  <View style={styles.container2}>
-    <View>
-      <Text style={styles.text}>Already have an Account?</Text>
-    </View>
-  
-    <View>
-      <Text style={styles.textreg}>Log In</Text>
-    </View>
-  </View>
-
-
-    </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          secureTextEntry
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Create Account</Text>
+        </TouchableOpacity>
+        <View style={styles.footer}>
+          <Text style={[styles.forgotPasswordText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Already have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={[styles.registerText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Log In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-
-  bg: {
-    backgroundColor: '#FAF6F6',
-    flex: 1,
-    fontFamily: 'Custom',
-  },
-
-  title: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Custom',
-    color: '#00ABA1',
-    fontSize: 30,
-  },
-
   container: {
-    flexDirection: 'column', 
-    justifyContent: 'flex-start', 
-    alignItems: 'center', 
-    
+    flex: 1,
+    backgroundColor: '#F8F8F8',
   },
-
-  container2: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    backgroundColor: '#FAF6F6',
-    padding: 10,
-    
-  },
-  box: {
-    width: 330,
-    height: 60,
-    backgroundColor: 'white',
-    margin: 10,
-    justifyContent: 'flex-start',
+  headerContainer: {
+    width: '100%',
     alignItems: 'flex-start',
-    borderTopLeftRadius: 10, 
-    borderTopRightRadius: 10, 
-    borderBottomLeftRadius: 10, 
-    borderBottomRightRadius: 10, 
-    
+    paddingHorizontal: 0,
+    marginBottom: 30,
   },
-  text: {
-    color: 'black',
-    textAlign: 'left',
-    margin: 10
-  },
-
-  textlog: {
-    color: 'white',
-    textAlign: 'left',
-    fontFamily: 'Custom',
-    fontSize: 22
-  },
-
-  textreg: {
-    color: '#00ABA1',
-    textAlign: 'left',
-    fontSize: 18,
-    textDecorationLine: 'underline',
-    marginEnd: 20,
-    fontFamily: 'Custom',
-  },
-
-  welcome: {
-    fontFamily: 'Custom',
-    color: 'black',
-    fontSize: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-
-  titlebox: {
-    backgroundColor: 'white',
-    width: 180,
-    marginTop: 70,
-    marginEnd: 60,
-    padding: 20,
-    borderTopRightRadius: 40, 
-    borderBottomRightRadius: 40, 
-    elevation: 5,
+  logoContainer: {
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
+    paddingHorizontal: 25,
+    paddingVertical: 7,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    marginTop: 5,
   },
-
-  loginbox: {
-    width: 300,
-    height: 60,
-    backgroundColor: '#00A79D',
-    margin: 10,
-    justifyContent: 'center',
+  logoText: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#00A19D',
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
-    borderTopLeftRadius: 30, 
-    borderTopRightRadius: 30, 
-    borderBottomLeftRadius: 30, 
-    borderBottomRightRadius: 30, 
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
-
+  welcomeText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 25,
+  },
+  input: {
+    width: '100%',
+    height: 52,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
+  button: {
+    width: '100%',
+    height: 42,
+    backgroundColor: '#00A19D',
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 1,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  forgotPasswordText: {
+    color: '#000',
+    textAlign: 'center',
+  },
+  registerText: {
+    color: '#00A19D',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  image: {
+    width: '100%',
+    height: '50%',
+    resizeMode: 'cover',
+    position: 'absolute',
+    bottom: 0,
+  },
 });

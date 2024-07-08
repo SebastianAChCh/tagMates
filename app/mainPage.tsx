@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
 import * as React from 'react';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
     Custom: require('../assets/fonts/League.ttf'),
   });
@@ -32,23 +32,35 @@ export default function HomeScreen() {
         <Marker
           coordinate={origin}
         />
+
+        <Marker
+          coordinate={{ latitude: 28.6350, longitude: -106.0720 }}
+          title="Amigo 1"
+        ><Image source={require('../assets/friend1.png')} style={styles.markerIcon} /></Marker>
+
+        <Marker
+          coordinate={{ latitude: 28.6320, longitude: -106.0650 }}
+          title="Amigo 2"
+        >
+          <Image source={require('../assets/friend2.png')} style={styles.markerIcon} />
+        </Marker>
       </MapView>
 
-      <View style={styles.titlebox}>
-        <Text style={styles.title}>TagMates</Text>
 
-        <View style={styles.imgCont}>
-          <Image
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
+            <Image
             source={require('../assets/images/people.png')}
-            style={styles.image}
-            resizeMode="stretch"
-          />
-
-          <Image
-            source={require('../assets/images/chat.png')}
             style={[styles.image, styles.margin]}
             resizeMode="stretch"
           />
+
+          <TouchableOpacity onPress={() => navigation.navigate('Chat')}><Image
+            source={require('../assets/images/chat.png')}
+            style={[styles.image, styles.margin]}
+            resizeMode="stretch"
+          /></TouchableOpacity>
         </View>
       </View>
 
@@ -71,38 +83,38 @@ export default function HomeScreen() {
         </View>
 
         <View>
-          <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Taggy')}><Image
             source={require('../assets/images/heart.png')}
             style={styles.imgMin}
             resizeMode="stretch"
-          />
+          /></TouchableOpacity>
           <Text style={styles.textMin}>Taggie</Text>
         </View>
 
         <View>
-          <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Health')}><Image
             source={require('../assets/images/health.png')}
             style={styles.imgMin}
             resizeMode="stretch"
-          />
+          /></TouchableOpacity>
           <Text style={styles.textMin}>Health</Text>
         </View>
 
         <View>
-          <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Settings')}><Image
             source={require('../assets/images/settings.png')}
             style={styles.imgMin}
             resizeMode="stretch"
-          />
+          /></TouchableOpacity>
           <Text style={styles.textMin}>Settings</Text>
         </View>
 
         <View>
-          <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}><Image
             source={require('../assets/images/blankProf.png')}
             style={styles.imgMin}
             resizeMode="stretch"
-          />
+          /></TouchableOpacity>
           <Text style={styles.textMin}>Profile</Text>
         </View>
       </View>
@@ -115,6 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF6F6',
     flex: 1,
     fontFamily: 'Custom',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 
   map: {
@@ -124,6 +137,12 @@ const styles = StyleSheet.create({
   marker: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  logoText: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#00A19D',
   },
 
   markerImage: {
@@ -138,6 +157,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
+
   title: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -146,25 +171,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
 
-  titlebox: {
-    backgroundColor: 'white',
-    height: 45,
-    width: 380,
-    marginTop: 35,
-    marginEnd: 60,
-    padding: 10,
-    borderTopRightRadius: 40,
-    borderBottomRightRadius: 40,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  markerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
+
 
   image: {
     width: 32,
@@ -179,6 +191,7 @@ const styles = StyleSheet.create({
 
   margin: {
     marginLeft: 20,
+    marginTop: 14,
   },
 
   barBox: {
@@ -198,6 +211,28 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: '5%',
     right: '5%',
+  },
+
+  logoContainer: {
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
+    paddingHorizontal: 25,
+    paddingVertical: 7,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    marginTop: 5,
+    flexDirection: 'row',
+  },
+
+  headerContainer: {
+    width: '100%',
+    alignItems: 'flex-start',
+    paddingHorizontal: 0,
+    marginBottom: 30,
   },
 
   imgMin: {
