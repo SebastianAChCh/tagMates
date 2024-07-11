@@ -33,17 +33,16 @@ export default function HomeScreen({ navigation }) {
           coordinate={origin}
         />
 
-        <Marker
+        <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}><Marker
           coordinate={{ latitude: 28.6350, longitude: -106.0720 }}
-          title="Amigo 1"
-        ><Image source={require('../assets/friend1.png')} style={styles.markerIcon} /></Marker>
+          title="Amigo 1">
+        <Image source={require('../assets/friend1.png')} style={styles.markerIcon} /></Marker></TouchableOpacity>
 
-        <Marker
+        <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}><Marker
           coordinate={{ latitude: 28.6320, longitude: -106.0650 }}
-          title="Amigo 2"
-        >
+          title="Amigo 2">
           <Image source={require('../assets/friend2.png')} style={styles.markerIcon} />
-        </Marker>
+        </Marker></TouchableOpacity>
       </MapView>
 
 
@@ -74,11 +73,11 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-          <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Mates')}><Image
             source={require('../assets/images/mates.png')}
             style={styles.imgMin}
             resizeMode="stretch"
-          />
+          /></TouchableOpacity>
           <Text style={styles.textMin}>Mates</Text>
         </View>
 

@@ -3,7 +3,7 @@ import { Image, ScrollView, Platform, SafeAreaView, StatusBar, StyleSheet, Text,
 import { useFonts } from 'expo-font';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfilePersonScreen({ navigation }) {
     const [fontsLoaded] = useFonts({
       LeagueSpartan_800ExtraBold,
     });

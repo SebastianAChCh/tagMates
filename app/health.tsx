@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
 
   image3: {
-    width: 40,
+    width: 80,
     height: 50,
     position: 'absolute',
     bottom: 0,

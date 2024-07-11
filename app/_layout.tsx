@@ -9,6 +9,9 @@ import Settings from './settingsRoutes';
 import HealthScreen from './health';
 import TaggyScreen from './taggyChat';
 import ProfileScreen from './profile';
+import ProfilePersonScreen from './profilePerson';
+import DiaryScreen from './diary';
+import MatesScreen from './mates';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +29,9 @@ export default function App() {
         <Stack.Screen name="Health" component={HealthScreen} />
         <Stack.Screen name="Taggy" component={TaggyScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="profilePerson" component={ProfilePersonScreen} />
+        <Stack.Screen name="Diary" component={DiaryScreen} />
+        <Stack.Screen name="Mates" component={MatesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

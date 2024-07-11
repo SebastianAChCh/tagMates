@@ -1,6 +1,6 @@
 import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan'; 
 import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SettingsScreen: React.FC = () => {
@@ -19,45 +19,51 @@ const SettingsScreen: React.FC = () => {
       <ScrollView style={styles.scrollView}>
         <Text style={styles.headerTitle}>Settings</Text>
 
-        <View style={styles.profileSection}>
-          <Image source={require('../assets/friend1.png')} style={styles.profilePic} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Johan Butera</Text>
-            <Text style={styles.profileDetail}>My profiles, my tags, name</Text>
-          </View>
-          <Icon name="chevron-right" size={15} color="#000" />
-        </View>
 
-        <View style={styles.optionItem}>
-          <Icon name="map-marker" size={24} color="red" />
+
+        <TouchableOpacity>
+          <View style={styles.optionItem}>
+          <Image source={require('../assets/images/location.png')}
+          style={styles.image}/>
           <Text style={styles.optionText}>Location</Text>
           <Icon name="chevron-right" size={15} color="#000" />
         </View>
+        </TouchableOpacity>
 
+        <TouchableOpacity>
         <View style={styles.optionItem}>
-          <Icon name="bell" size={24} color="red" />
+        <Image source={require('../assets/images/notification.png')}
+          style={styles.image}/>
           <Text style={styles.optionText}>Notifications</Text>
           <Icon name="chevron-right" size={15} color="#000" />
         </View>
-
+        </TouchableOpacity>
+        
+        <TouchableOpacity>
         <View style={styles.optionItem}>
-          <Icon name="ban" size={24} color="red" />
+        <Image source={require('../assets/images/block.png')}
+          style={styles.image}/>
           <Text style={styles.optionText}>Blocks</Text>
           <Icon name="chevron-right" size={15} color="#000" />
         </View>
+        </TouchableOpacity>
 
+        <TouchableOpacity>
         <View style={styles.optionItem}>
-          <Icon name="heart" size={24} color="red" />
+        <Image source={require('../assets/images/heart.png')}
+          style={styles.image}/>
           <Text style={styles.optionText}>Search Preferences</Text>
           <Icon name="chevron-right" size={15} color="#000" />
         </View>
+        </TouchableOpacity>
 
         <View style={styles.switchContainer}>
-          <Icon name="wifi" size={24} color="red" />
+        <Image source={require('../assets/images/proximity.png')}
+          style={styles.image}/>
           <Text style={styles.optionText}>Proximity Vibration</Text>
           <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+            trackColor={{ false: "#767577", true: "#00A19D" }}
+            thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
@@ -74,6 +80,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginHorizontal: 20,
+  },
+
+  image: {
+    height: 35,
+    width: 35,
+    borderRadius: 5
   },
   headerTitle: {
     fontFamily: 'LeagueSpartan_800ExtraBold', 

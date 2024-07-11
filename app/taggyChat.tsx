@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as React from 'react';
 
 interface Message {
   id: number;
   text: string;
 }
 
-const TaggyScreen: React.FC = () => {
+const TaggyScreen: React.FC = ( { navigation } ) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
@@ -26,6 +27,10 @@ const TaggyScreen: React.FC = () => {
       <Text style={styles.headerTitle}>Taggy</Text>
         <View style={styles.header}>
           <Image source={require('../assets/images/ron.jpeg')} style={styles.avatar} />
+            <View>
+            <TouchableOpacity onPress={() => navigation.navigate('Diary')}>
+              <Image source={require('../assets/images/diary.png')} style={styles.diary} /></TouchableOpacity>
+            </View>
         </View>
 
         <FlatList
@@ -86,6 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginHorizontal: 10,
     elevation: 50
+  },
+  diary: {
+    height: 20,
+    width: 20,
+    borderRadius: 100,
   },
   username: {
     fontWeight: 'bold',
