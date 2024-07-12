@@ -1,7 +1,7 @@
 import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan'; 
 import React, { useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 const HealthScreen: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(false);

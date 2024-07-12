@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native'
 
 export default function LoginScreen({ navigation }) {
   const [fontsLoaded] = useFonts({

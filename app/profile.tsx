@@ -1,7 +1,7 @@
 
 import { Image, ScrollView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
+import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan'
 
 export default function ProfileScreen({ navigation }) {
     const [fontsLoaded] = useFonts({

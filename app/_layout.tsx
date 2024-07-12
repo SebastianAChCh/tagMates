@@ -11,7 +11,7 @@ import TaggyScreen from './taggyChat';
 import ProfileScreen from './profile';
 import ProfilePersonScreen from './profilePerson';
 import DiaryScreen from './diary';
-import MatesScreen from './mates';
+import MatesScreen from './mates'
 
 const Stack = createNativeStackNavigator();
 

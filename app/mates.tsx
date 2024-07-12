@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
 
 const MatesScreen = () => {
   const [requests, setRequests] = useState([
@@ -23,7 +23,7 @@ const MatesScreen = () => {
         <Text style={styles.matchPercentage}>{item.matchPercentage}</Text>
       </View>
       <TouchableOpacity style={styles.confirmButton} onPress={() => confirmRequest(item.id)}>
-        <Text style={styles.confirmButtonText}>Confirmar</Text>
+        <Text style={styles.confirmButtonText}>Confirmar</Text>/hhhhhhhh
       </TouchableOpacity>
       <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
         <Text style={styles.deleteButtonText}>Eliminar</Text>

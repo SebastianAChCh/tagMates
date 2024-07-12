@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, Image, Modal, Platform, StatusBar, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, Image, Modal, Platform, StatusBar, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
 
 export default function DiaryScreen() {
   const [rating, setRating] = useState(0);

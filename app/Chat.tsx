@@ -1,7 +1,7 @@
 import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React from 'react';
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 type ChatItemProps = {
     item: {

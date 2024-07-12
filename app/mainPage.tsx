@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
-import * as React from 'react';
+import * as React from 'react'
 
 export default function HomeScreen({ navigation }) {
   const [fontsLoaded] = useFonts({
