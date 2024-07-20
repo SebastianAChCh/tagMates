@@ -1,4 +1,3 @@
-// LoginScreen.js
 import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';

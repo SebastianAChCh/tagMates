@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { reloadAsync } from 'expo-updates';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
 import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native'
 import { LogInType } from '../types/Session';
 import { useAuth } from '../providers/Authentication';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation }: { navigation: any }) {
   const [session, setSession] = React.useState<LogInType>();
   const { logIn } = useAuth();
   const [fontsLoaded] = useFonts({
@@ -13,10 +14,14 @@ export default function LoginScreen({ navigation }) {
   });
 
   const handleLogin = async (): Promise<void> => {
-    if (logIn) {
-      const response = await logIn({ email: session!.email, password: session!.password });
-      if (response) {
-        //redirect to another page
+    if (logIn && session?.email && session.password) {
+      try {
+        const response = await logIn({ email: session!.email, password: session!.password });
+        if (response) {
+          await reloadAsync();
+        }
+      } catch (error) {
+        if (error instanceof Error) console.error(error.message);
       }
     }
   }
