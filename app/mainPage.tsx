@@ -61,10 +61,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
       </MapView>
 
-      {/* Header */}
       <Header navigation={navigation} />
 
-      {/* Menu */}
       <Menu navigation={navigation} />
     </SafeAreaView>
   );

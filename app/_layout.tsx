@@ -4,10 +4,11 @@ import Authenticated from '../Routes/Authenticated';
 import UnAuthenticated from '../Routes/UnAuthenticated';
 
 const Main = () => {
-  const { publicToken } = useAuth();
+  const { publicToken, loginSuccess } = useAuth();
+
   return (
     <NavigationContainer independent={true}>
-      {publicToken ? <Authenticated /> : <UnAuthenticated />}
+      {publicToken || loginSuccess ? <Authenticated /> : <UnAuthenticated />}
     </NavigationContainer>
   );
 };

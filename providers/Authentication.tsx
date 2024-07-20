@@ -1,14 +1,16 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, Dispatch, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-// import Cookies from 'universal-cookie';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as secureStore from 'expo-secure-store';
 import { LogInType, signUpTp } from '../types/Session';
 
 type propsContext = {
-    publicToken?: string | undefined
+    publicToken?: string | undefined;
     logIn?: (data: LogInType) => Promise<any>;
     signUp?: (data: signUpTp) => Promise<any>;
     userInfo?: userData | undefined;
+    loginSuccess?: boolean;
+    setLoginSuccess?: Dispatch<React.SetStateAction<boolean>>
 };
 
 type PropsProvider = {
@@ -26,20 +28,22 @@ const Auth = createContext<propsContext>({});
 export const useAuth = () => useContext(Auth);
 
 const AuthProvider = ({ children }: PropsProvider) => {
+    const INITIAL_URL: string = String(process.env.URL_BACKEND);
     const [userInfo, setUserInfo] = useState<userData>();
     const [publicToken, setPublicToken] = useState<string | undefined>();
-    const INITIAL_URL: string = String(process.env.URL_BACKEND);
+    const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
 
     useEffect(() => {
         isAuth();
     }, []);
 
-
     //getting the refresh token from the storage
     const getToken = async (): Promise<string> => {
         if (Platform.OS === 'web') {
-            // const cookie = new Cookies();
-            // if (cookie.get('refresh_token')) return cookie.get('refresh_token');
+            const token = await AsyncStorage.getItem('token');
+            if (token) {
+                return token;
+            }
         } else {
             const tokenResponse = await secureStore.getItemAsync('token');
             if (typeof tokenResponse === 'string') {
@@ -105,6 +109,7 @@ const AuthProvider = ({ children }: PropsProvider) => {
     const logIn = async (data: LogInType): Promise<any> => {
         try {
             const response = await fetch(`${INITIAL_URL}/logIn`, {
+                method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
                 },
@@ -166,18 +171,14 @@ const AuthProvider = ({ children }: PropsProvider) => {
 
     const storageToken = async (token: string): Promise<void> => {
         if (Platform.OS === 'web') {
-            // const cookie = new Cookies();
-            // const date = new Date();
-            // cookie.set('refresh_token', token, {
-            //     expires: new Date(date.setDate(date.getDate() + 7))
-            // });
+            await AsyncStorage.setItem('token', token)
         } else {
             await secureStore.setItemAsync('token', token);
         }
     };
 
     return (
-        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo }}>
+        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo, loginSuccess, setLoginSuccess }}>
             {children}
         </Auth.Provider>
     );

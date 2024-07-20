@@ -12,7 +12,7 @@ export default function SignUp({ navigation }: { navigation: any }) {
     lastname: ''
   });
   const [password, setPassword] = React.useState<string>('');
-  const { signUp } = useAuth();
+  const { signUp, setLoginSuccess } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
@@ -23,7 +23,10 @@ export default function SignUp({ navigation }: { navigation: any }) {
         if (password !== session.password) return ''; // send an alert to the user that the password is not the same
         const fullname = session?.name && session?.lastname ? session?.name + session?.lastname : '';
         const response = await signUp({ age: session?.age, email: session?.email, emergency_contact: session?.emergency_contact, fullname, password: session?.password });
-        if (response) {
+        if (response && Platform.OS === 'web' && setLoginSuccess) {
+          setLoginSuccess(true);
+        }
+        else if (response) {
           await reloadAsync();
         }
       }

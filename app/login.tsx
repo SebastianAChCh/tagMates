@@ -8,16 +8,18 @@ import { useAuth } from '../providers/Authentication';
 
 export default function LoginScreen({ navigation }: { navigation: any }) {
   const [session, setSession] = React.useState<LogInType>();
-  const { logIn } = useAuth();
+  const { logIn, setLoginSuccess } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
 
   const handleLogin = async (): Promise<void> => {
-    if (logIn && session?.email && session.password) {
+    if (logIn && session!.email && session!.password) {
       try {
         const response = await logIn({ email: session!.email, password: session!.password });
-        if (response) {
+        if (response && Platform.OS === 'web' && setLoginSuccess) {
+          setLoginSuccess(true);
+        } else if (response) {
           await reloadAsync();
         }
       } catch (error) {
