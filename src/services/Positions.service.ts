@@ -1,5 +1,6 @@
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
 import { NewCoordinates, CalculateDistance, Coordinates } from '../types/Positions';
+import { UsersModel } from '../types/Users';
 import { Users } from './Users.service';
 
 export class Positions {
@@ -9,9 +10,9 @@ export class Positions {
         this.UserMethods = new Users(null);
     }
 
-    public async getCoordinatesUser(email: string) {
+    public async getCoordinatesUser(email: string): Promise<UsersModel | string> {
         const ID = await this.UserMethods.getUserId(email);
-        if (ID === 'That user does not exist') return;
+        if (ID === 'That user does not exist') return ID;
 
         try {
             const coordinates = await db.ref('Users/' + ID).get();
@@ -37,8 +38,23 @@ export class Positions {
         }
     }
 
+    private degreesToRadians(degrees: number): number {
+        return degrees * (Math.PI / 180);
+    }
+
     public calculateDistance(coordinates: CalculateDistance): boolean {
-        return false;
+        const R: number = 6371; // Radius of the Earth in kilometers
+        const dLat: number = this.degreesToRadians(coordinates.coordinates2.latitude - coordinates.coordinates1.latitude);
+        const dLon: number = this.degreesToRadians(coordinates.coordinates2.longitude - coordinates.coordinates1.longitude);
+        const a: number =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.degreesToRadians(coordinates.coordinates1.latitude)) * Math.cos(this.degreesToRadians(coordinates.coordinates2.latitude)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // Distance in kilometers
+
+        const radiusInKm = Number(coordinates.radius) / 1000; // Convert radius from meters to kilometers
+        return distance <= radiusInKm;
     }
 
 }

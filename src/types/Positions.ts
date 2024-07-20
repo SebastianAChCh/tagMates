@@ -13,4 +13,5 @@ export type NewCoordinates = {
 export type CalculateDistance = {
     coordinates1: Coordinates
     coordinates2: Coordinates
+    radius: number | string
 };

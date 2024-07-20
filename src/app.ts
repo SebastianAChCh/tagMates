@@ -11,13 +11,15 @@ import Position from './routes/Position.routes';
 import Messages from './routes/Messages.routes'
 import { PORT } from './configurations/conf';
 import { dbRealTime } from './configurations/firebaseAdmin'
-import { Message } from './types/Messages'
+import { Message, MessageTaggy } from './types/Messages'
 import { UsersModel, usersSocket } from './types/Users';
 import Contacts from './routes/Contacts.routes';
 import { checkResponseType, RequestsType } from './types/Requests';
 import { Requests } from './services/Requests.service';
 import { Positions } from './services/Positions.service';
-// import {isAuth} from './middlewares/isAuth'
+import TaggyRt from './routes/Taggy.routes'
+import { Taggy } from './services/Taggy.service';
+import { Coordinates } from './types/Positions';
 
 const app = express();
 const nodeServer = createServer(app);
@@ -39,11 +41,11 @@ app.use(cookieParser());
 
 //routes
 app.use(SessionsRoutes);
-// app.use(isAuth); //here will be the middleware that verifies if the user is authenticated or not
 app.use(Bans);
 app.use(Position);
 app.use(Contacts);
 app.use(Messages);
+app.use(TaggyRt);//TaggyRt is TaggyRoute
 
 //Users online in the chat
 let Users: usersSocket[] = [];
@@ -55,7 +57,7 @@ const addUser = (username: string, socketId: string) => !Users.some((user: users
 const deleteUsers = (socketId: string) => (Users = Users.filter((user: usersSocket) => user.socketId !== socketId));
 
 //This method is used when a user updated their coordinates or when a new user is added
-const userCoord = (users: UsersModel) => {
+const userCoord = (users: UsersModel, socket: Socket) => {
   const userIsNear: UsersModel[] | null = [];
   const position = new Positions();
 
@@ -63,12 +65,24 @@ const userCoord = (users: UsersModel) => {
     const coord = await position.getCoordinatesUser(user.user);
 
     //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
-    if (users.coordinates && coord) {
-      const isNear: boolean = position.calculateDistance({ coordinates1: coord, coordinates2: users.coordinates });
+    if (users.coordinates && coord && typeof coord !== 'string' && coord.range && coord.coordinates) {
+      const coord1 = {
+        ...coord.coordinates,
+        radius: coord.range
+      }
+      const isNear: boolean = position.calculateDistance({ coordinates1: coord1, coordinates2: users.coordinates, radius: 0 });
       if (isNear) userIsNear.push(users);
     }
-
   });
+
+  Users.map(userA => {
+    userIsNear.map(userB => {
+      if (userA.user === userB.email) {
+        socket.to(userA.socketId).emit('positionUser', userB);
+      }
+    });
+  })
+
 }
 
 socketIo.on('connection', (serverIo: Socket) => {
@@ -84,12 +98,12 @@ socketIo.on('connection', (serverIo: Socket) => {
 
   //detects when a new user is created
   dbRealTime.ref('Users').on('child_added', (users) => {
-    userCoord(users.val());
+    userCoord(users.val(), serverIo);
   }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //detects when the position of a user has changed
   dbRealTime.ref('Users').on('child_changed', (users) => {
-    userCoord(users.val());
+    userCoord(users.val(), serverIo);
   }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //when the user send the request it'll be sent to socket.io and will be send through it to tell at the user if is connected in that moment that a new request has came otherwise
@@ -123,6 +137,22 @@ socketIo.on('connection', (serverIo: Socket) => {
     })
 
   });
+
+  serverIo.on('MessageTaggy', (message: MessageTaggy) => {
+    const TaggyMethods = new Taggy();
+    let responseMessage: any;
+    (async () => {
+      responseMessage = await TaggyMethods.getMessage(message);
+    });
+
+    Users.forEach(user => {
+      if (user.user === message.user) {
+        socketIo.to(user.socketId).emit('ResponseTaggy', responseMessage);
+      }
+    })
+
+  });
+
 });
 
 nodeServer.listen(PORT, () => {

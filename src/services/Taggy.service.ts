@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { Message } from '../types/Messages';
+import { MessageTaggy } from '../types/Messages';
 import { dbFirestore as db } from '../configurations/firebaseAdmin';
 
 export class Taggy {
@@ -8,14 +8,18 @@ export class Taggy {
         this.openai = new OpenAI();
     }
 
-    public async getMessage(content: string) {
+    public async getMessage(Message: MessageTaggy) {
         try {
             const stream = await this.openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [{ role: "system", content: 'You are a helpful assistant that helps the users with their doubts and problems' }, { role: "user", content: content }],
+                messages: [{ role: "system", content: 'You are a helpful assistant that helps the users with their doubts and problems' }, { role: "user", content: Message.message }],
                 stream: true,
                 response_format: { type: 'json_object' }
             });
+
+            if (stream.choices[0].message.content) {
+                this.saveMessage(Message);
+            }
 
             return stream.choices[0].message.content;
         } catch (error: any) {
@@ -23,10 +27,15 @@ export class Taggy {
         }
     }
 
-    public async saveMessage(Message: Message) {
+    private async saveMessage(Message: MessageTaggy) {
         try {
-            await db.collection('TaggyMessages').doc(Message.sender).collection('Messages').add({
-                Message
+            const userInformation = {
+                ...Message,
+                _user: Message.user
+            }
+
+            await db.collection('TaggyMessages').doc(Message.user).collection('Messages').add({
+                userInformation,
             });
 
             return;
@@ -36,8 +45,15 @@ export class Taggy {
         }
     }
 
-    public async loadMessage() {
+    public async loadMessages(Message: MessageTaggy) {
+        try {
+            const messages = await db.collection('TaggyMessages').doc(Message.user).collection('Messages').get();
 
+            return messages.docs[0];
+        } catch (error: any) {
+            console.error(error);
+            throw new Error(error.message);
+        }
     }
 
 }
