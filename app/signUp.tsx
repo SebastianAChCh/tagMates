@@ -2,12 +2,36 @@
 import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native';
+import { reloadAsync } from 'expo-updates';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar } from 'react-native';
+import { signUpForm } from '../types/Session';
+import { useAuth } from '../providers/Authentication';
 
-export default function SignUp({ navigation }) {
+export default function SignUp({ navigation }: { navigation: any }) {
+  const [session, setSession] = React.useState<signUpForm>({
+    name: '',
+    lastname: ''
+  });
+  const [password, setPassword] = React.useState<string>('');
+  const { signUp } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
+
+  const handleSingUp = async () => {
+    try {
+      if (signUp) {
+        if (password !== session.password) return ''; // send an alert to the user that the password is not the same
+        const fullname = session?.name && session?.lastname ? session?.name + session?.lastname : '';
+        const response = await signUp({ age: session?.age, email: session?.email, emergency_contact: session?.emergency_contact, fullname, password: session?.password });
+        if (response) {
+          await reloadAsync();
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) console.error(error.message);
+    }
+  }
 
   if (!fontsLoaded) {
     return <View style={styles.container}><Text>Cargando...</Text></View>;
@@ -22,44 +46,76 @@ export default function SignUp({ navigation }) {
       </View>
       <View style={styles.content}>
         <Text style={[styles.welcomeText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Sign Up</Text>
-        
+
         <TextInput
           style={styles.input}
           placeholder="Name(s)"
-          secureTextEntry
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['name']: e
+            }));
+          }}
         />
 
         <TextInput
           style={styles.input}
           placeholder="Last Name(s)"
-          secureTextEntry
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['lastname']: e
+            }));
+          }}
         />
 
         <TextInput
           style={styles.input}
           placeholder="Email"
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['email']: e
+            }));
+          }}
           keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['password']: e
+            }));
+          }}
           secureTextEntry
         />
 
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
+          onChangeText={(e) => {
+            setPassword(e);
+          }}
           secureTextEntry
         />
 
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
-          secureTextEntry
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['emergency_contact']: e
+            }));
+          }}
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => {
+            handleSingUp()
+          }}
         >
           <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Create Account</Text>
         </TouchableOpacity>
@@ -70,7 +126,7 @@ export default function SignUp({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-      
+
     </SafeAreaView>
   );
 }

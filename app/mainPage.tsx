@@ -1,9 +1,12 @@
-import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Platform, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
 import * as React from 'react'
+import { useAuth } from '../providers/Authentication';
 
 export default function HomeScreen({ navigation }) {
+  const { userInfo } = useAuth();
+
   const [fontsLoaded] = useFonts({
     Custom: require('../assets/fonts/League.ttf'),
   });
@@ -19,7 +22,7 @@ export default function HomeScreen({ navigation }) {
   });
 
   return (
-    <View style={styles.bg}>
+    <SafeAreaView style={styles.bg}>
       <MapView
         style={styles.map}
         initialRegion={{
@@ -36,7 +39,7 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}><Marker
           coordinate={{ latitude: 28.6350, longitude: -106.0720 }}
           title="Amigo 1">
-        <Image source={require('../assets/friend1.png')} style={styles.markerIcon} /></Marker></TouchableOpacity>
+          <Image source={require('../assets/friend1.png')} style={styles.markerIcon} /></Marker></TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}><Marker
           coordinate={{ latitude: 28.6320, longitude: -106.0650 }}
@@ -46,10 +49,10 @@ export default function HomeScreen({ navigation }) {
       </MapView>
 
 
-        <View style={styles.headerContainer}>
-          <View style={styles.logoContainer}>
-            <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
-            <Image
+      <View style={styles.headerContainer}>
+        <View style={styles.logoContainer}>
+          <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
+          <Image
             source={require('../assets/images/people.png')}
             style={[styles.image, styles.margin]}
             resizeMode="stretch"
@@ -73,7 +76,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Mates')}><Image
+          <TouchableOpacity onPress={() => navigation.navigate('Mates')}><Image
             source={require('../assets/images/mates.png')}
             style={styles.imgMin}
             resizeMode="stretch"
@@ -82,7 +85,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Taggy')}><Image
+          <TouchableOpacity onPress={() => navigation.navigate('Taggy')}><Image
             source={require('../assets/images/heart.png')}
             style={styles.imgMin}
             resizeMode="stretch"
@@ -91,7 +94,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Health')}><Image
+          <TouchableOpacity onPress={() => navigation.navigate('Health')}><Image
             source={require('../assets/images/health.png')}
             style={styles.imgMin}
             resizeMode="stretch"
@@ -100,7 +103,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}><Image
+          <TouchableOpacity onPress={() => navigation.navigate('Settings')}><Image
             source={require('../assets/images/settings.png')}
             style={styles.imgMin}
             resizeMode="stretch"
@@ -109,7 +112,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}><Image
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}><Image
             source={require('../assets/images/blankProf.png')}
             style={styles.imgMin}
             resizeMode="stretch"
@@ -117,7 +120,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.textMin}>Profile</Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

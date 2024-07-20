@@ -27,10 +27,19 @@
     },
     "plugins": [
       [
-      "expo-font", {
-        "fonts": ["./assets/fonts/League.ttf"]
-      }
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/League.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": "Allow tagMates to access your Face ID biometric data."
+        }
+      ]
     ]
-  ]
   }
 }

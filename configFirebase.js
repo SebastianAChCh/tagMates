@@ -1,13 +1,5 @@
 // Import the functions you need from the SDKs you need
-import {
-  apiKey,
-  appId,
-  authDomain,
-  measurementId,
-  messagingSenderId,
-  projectId,
-  storageBucket,
-} from "@env";
+import { apiKey, appId, authDomain, measurementId, messagingSenderId, projectId, storageBucket } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import { getReactNativePersistence, initializeAuth } from "firebase/auth";

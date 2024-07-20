@@ -2,11 +2,24 @@ import * as React from 'react';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
 import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native'
+import { LogInType } from '../types/Session';
+import { useAuth } from '../providers/Authentication';
 
 export default function LoginScreen({ navigation }) {
+  const [session, setSession] = React.useState<LogInType>();
+  const { logIn } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
+
+  const handleLogin = async (): Promise<void> => {
+    if (logIn) {
+      const response = await logIn({ email: session!.email, password: session!.password });
+      if (response) {
+        //redirect to another page
+      }
+    }
+  }
 
   if (!fontsLoaded) {
     return <View style={styles.container}><Text>Cargando...</Text></View>;
@@ -25,15 +38,27 @@ export default function LoginScreen({ navigation }) {
           style={styles.input}
           placeholder="Correo electrónico"
           keyboardType="email-address"
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['email']: e
+            }));
+          }}
         />
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
+          onChangeText={(e) => {
+            setSession((oldData) => ({
+              ...oldData,
+              ['password']: e
+            }));
+          }}
           secureTextEntry
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => handleLogin()}
         >
           <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Iniciar sesión</Text>
         </TouchableOpacity>
