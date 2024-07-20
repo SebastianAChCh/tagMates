@@ -1,6 +1,6 @@
-import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan'; 
+import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
 
 
 const HealthScreen: React.FC = () => {
@@ -12,7 +12,7 @@ const HealthScreen: React.FC = () => {
   });
 
   if (!fontsLoaded) {
-    return <Text>Cargando...</Text>; 
+    return <Text>Cargando...</Text>;
   }
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
@@ -20,37 +20,37 @@ const HealthScreen: React.FC = () => {
         <Text style={styles.headerTitle}>Health</Text>
 
         <View style={styles.margin}>
-            <View style={styles.box}>
-                <Image
-                source={require('../assets/images/healthR.png')}
-                style={styles.image}/>
+          <View style={styles.box}>
+            <Image
+              source={require('../assets/images/healthR.png')}
+              style={styles.image} />
+          </View>
+          <View style={styles.margin2}>
+            <View style={styles.box2}>
+              <Image
+                source={require('../assets/images/Termometer.png')}
+                style={styles.image2} />
+              <Image
+                source={require('../assets/images/bars.png')}
+                style={styles.image3} />
             </View>
-            <View style={styles.margin2}>
-                <View style={styles.box2}>
-                    <Image
-                    source={require('../assets/images/Termometer.png')}
-                    style={styles.image2}/>
-                    <Image
-                    source={require('../assets/images/bars.png')}
-                    style={styles.image3}/>
-                </View>
-                    
-                <View style={styles.box2}>
-                    <Image
-                    source={require('../assets/images/oxygen.png')}
-                    style={styles.image2}/>
-                    <Image
-                    source={require('../assets/images/bars.png')}
-                    style={styles.image3}/>
-                </View>
-                
+
+            <View style={styles.box2}>
+              <Image
+                source={require('../assets/images/oxygen.png')}
+                style={styles.image2} />
+              <Image
+                source={require('../assets/images/bars.png')}
+                style={styles.image3} />
             </View>
-            
+
+          </View>
+
         </View>
         <Text style={styles.headerTitle}>Resume</Text>
 
         <Text style={styles.text}>Tus Signos Vitales....</Text>
-    
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 20, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'grey'
   },
-  
+
   AndroidSafeArea: {
     flex: 1,
     backgroundColor: "white",
