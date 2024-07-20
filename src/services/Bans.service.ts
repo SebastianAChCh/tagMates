@@ -18,9 +18,9 @@ export class Bans {
                 userBanned: BanUser.userToBan
             });
             return '';
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -36,9 +36,9 @@ export class Bans {
                 const user = await db.collection('UsersBlocked').doc(userBan.email).collection('Bans').where('email', '==', userBan.user).get();
                 return user.docs.length > 0;
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -57,9 +57,9 @@ export class Bans {
                 userBanned: email
             });
             return '';
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 }

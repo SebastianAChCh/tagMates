@@ -8,9 +8,9 @@ export class Requests {
             await db.collection('Requests').doc(data.receiver).collection(data.sender).add({
                 status: 'waiting'
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -28,16 +28,17 @@ export class Requests {
                 break;
 
             default:
-                console.error('That type is not supported');
+                console.error('That type is not supported.');
                 break;
         }
     }
-    public async removeRequest(data: RequestsType) {
+
+    public removeRequest(data: RequestsType) {
         try {
-            await db.collection('Requests').doc(data.receiver).collection(data.sender);
-        } catch (error) {
+            db.collection('Requests').doc(data.receiver).collection(data.sender);
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 

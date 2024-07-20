@@ -13,3 +13,6 @@ export const measurementId = process.env.measurementId;
 export const cloud_name = process.env.cloud_name;
 export const api_key = process.env.api_key;
 export const api_secret = process.env.api_secret;
+export const SALT_ROUNDS: number = Number(process.env.SALT_ROUNDS);
+export const SECRET_KEY: string = String(process.env.SECRET_KEY);
+export const NODE_ENV: string = String(process.env.NODE_ENV);

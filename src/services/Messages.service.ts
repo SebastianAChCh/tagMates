@@ -1,15 +1,12 @@
 import { dbFirestore as db, Timestamp } from '../configurations/firebaseAdmin';
 import { Message } from '../types/Messages';
-import { Contacts } from './Contacts.service';
 import { v7 as RandomID } from 'uuid';
 
 export class MessagesSocket {
     private email: string;
-    private Contacts: Contacts;
 
     constructor(email: string) {
         this.email = email;
-        this.Contacts = new Contacts();
     }
 
     public async saveMessages(Message: Message) {
@@ -29,9 +26,9 @@ export class MessagesSocket {
 
         try {
             await db.collection('Conversations').doc(ID).collection('Messages').add({ ...Message, date: Timestamp.now() });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -41,9 +38,9 @@ export class MessagesSocket {
                 'Username': user,
                 'Id': ID
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
 
         try {
@@ -51,9 +48,9 @@ export class MessagesSocket {
                 'Username': this.email,
                 'Id': ID
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
 
     }
@@ -67,9 +64,9 @@ export class MessagesSocket {
             }
 
             return resultMessagesID.docs[0].data().Id;
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -85,9 +82,9 @@ export class MessagesSocket {
             }
 
             return messages;
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 

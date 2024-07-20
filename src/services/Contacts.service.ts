@@ -12,9 +12,9 @@ export class Contacts {
                 return data[0]._fieldsProto.email;
             } else return null;
 
-        } catch (error) {
-            console.error('error getting the contact:', error);
-            throw new Error(String(error));
+        } catch (error: any) {
+            console.error(error);
+            throw new Error(error.message);
         }
     }
 
@@ -23,18 +23,18 @@ export class Contacts {
             const ContactsResponse = await db.collection('Contacts').doc(email).collection('Users').get();
 
             return ContactsResponse;
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
     public async saveContacts(contact: ContactsType) {
         try {
             await db.collection('Contacts').doc(contact.email).collection('Users').add({ email: contact.user });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 };

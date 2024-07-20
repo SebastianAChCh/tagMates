@@ -1,5 +1,5 @@
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { NewCoordinates, CalculateDistance } from '../types/Positions';
+import { NewCoordinates, CalculateDistance, Coordinates } from '../types/Positions';
 import { Users } from './Users.service';
 
 export class Positions {
@@ -18,9 +18,9 @@ export class Positions {
             const coordinatesVal = coordinates.val();
             const coordinatesKeys = Object.keys(coordinatesVal)[0];
             return coordinatesVal[coordinatesKeys];
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -31,13 +31,13 @@ export class Positions {
         try {
             const newCoordinatesObj = newCoordinates.coordinates;
             await db.ref('Users/' + ID).update(newCoordinatesObj);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
-    public calculateDistance(coordinates: CalculateDistance) {
+    public calculateDistance(coordinates: CalculateDistance): boolean {
         return false;
     }
 

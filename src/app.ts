@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import busboy from 'connect-busboy';
+import cookieParser from 'cookie-parser';
 import { Server, Socket } from 'socket.io'
 import { createServer } from 'node:http'
 import SessionsRoutes from './routes/Sessions.routes';
@@ -16,6 +17,7 @@ import Contacts from './routes/Contacts.routes';
 import { checkResponseType, RequestsType } from './types/Requests';
 import { Requests } from './services/Requests.service';
 import { Positions } from './services/Positions.service';
+// import {isAuth} from './middlewares/isAuth'
 
 const app = express();
 const nodeServer = createServer(app);
@@ -33,9 +35,11 @@ app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: false }));
 app.use(busboy());
+app.use(cookieParser());
 
 //routes
 app.use(SessionsRoutes);
+// app.use(isAuth); //here will be the middleware that verifies if the user is authenticated or not
 app.use(Bans);
 app.use(Position);
 app.use(Contacts);
@@ -59,9 +63,11 @@ const userCoord = (users: UsersModel) => {
     const coord = await position.getCoordinatesUser(user.user);
 
     //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
-    const isNear = position.calculateDistance({ coordinates1: coord, coordinates2: users.coordinates });
+    if (users.coordinates && coord) {
+      const isNear: boolean = position.calculateDistance({ coordinates1: coord, coordinates2: users.coordinates });
+      if (isNear) userIsNear.push(users);
+    }
 
-    if (isNear) userIsNear.push(users);
   });
 }
 

@@ -5,9 +5,9 @@ export class Health {
     public async saveHealthInfo(healthInformation: InfoHealth) {
         try {
             await db.collection('Medical_Information').doc(healthInformation.email).create(healthInformation);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -21,9 +21,9 @@ export class Health {
                 await db.collection('Medical_Information').doc(newInfoHealth.email).update({ pulse: newInfoHealth.newInfoHealth.pulse });
             else if (newInfoHealth.newInfoHealth.temperature)
                 await db.collection('Medical_Information').doc(newInfoHealth.email).update({ temperature: newInfoHealth.newInfoHealth.temperature });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 
@@ -32,9 +32,9 @@ export class Health {
             const medicalData = await db.collection('Medical_Information').doc(email).get();
             if (!medicalData) return 'There is no content yet';
             return medicalData;
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            throw new Error(String(error));
+            throw new Error(error.message);
         }
     }
 }
