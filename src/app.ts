@@ -18,8 +18,8 @@ import { checkResponseType, RequestsType } from './types/Requests';
 import { Requests } from './services/Requests.service';
 import { Positions } from './services/Positions.service';
 import TaggyRt from './routes/Taggy.routes'
+import UsersInfo from './routes/UserInformation.routes'
 import { Taggy } from './services/Taggy.service';
-import { Coordinates } from './types/Positions';
 
 const app = express();
 const nodeServer = createServer(app);
@@ -31,7 +31,7 @@ const socketIo = new Server(nodeServer, {
 });
 
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.text());
@@ -45,6 +45,7 @@ app.use(Bans);
 app.use(Position);
 app.use(Contacts);
 app.use(Messages);
+app.use(UsersInfo);
 app.use(TaggyRt);//TaggyRt is TaggyRoute
 
 //Users online in the chat

@@ -15,3 +15,8 @@ export type CalculateDistance = {
     coordinates2: Coordinates
     radius: number | string
 };
+
+export type updateProximityState = {
+    email: string
+    state: boolean
+};

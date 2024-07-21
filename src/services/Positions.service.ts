@@ -1,5 +1,5 @@
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { NewCoordinates, CalculateDistance, Coordinates } from '../types/Positions';
+import { NewCoordinates, CalculateDistance, Coordinates, updateProximityState } from '../types/Positions';
 import { UsersModel } from '../types/Users';
 import { Users } from './Users.service';
 
@@ -32,6 +32,37 @@ export class Positions {
         try {
             const newCoordinatesObj = newCoordinates.coordinates;
             await db.ref('Users/' + ID).update(newCoordinatesObj);
+        } catch (error: any) {
+            console.error(error);
+            throw new Error(error.message);
+        }
+    }
+
+    public async changeProximityState(data: updateProximityState): Promise<string | void> {
+        const ID = await this.UserMethods.getUserId(data.email);
+        if (ID === 'That user does not exist') return ID;
+
+        try {
+            await db.ref('Users/' + ID).update({ Vibration_proximity: data.state });
+            return;
+        } catch (error: any) {
+            console.error(error);
+            throw new Error(error.message);
+        }
+    }
+
+    public async getProximityState(email: string): Promise<string | UsersModel> {
+
+        try {
+            const proximityState = await db.ref('Users').orderByChild('email').equalTo(email).once('value');
+
+            if (!proximityState.exists()) {
+                return 'Something went wrong';
+            } else {
+                const proximityStateVal = proximityState.val();
+                const proximityStateID = Object.keys(proximityStateVal)[0];
+                return proximityStateVal[proximityStateID];
+            }
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);

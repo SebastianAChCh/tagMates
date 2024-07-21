@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { getDataSession, informationUser, logIn, UserNewInfo, UsersModel } from '../types/Users';
+import { Diary, getDataSession, informationUser, logIn, UserNewInfo, UsersModel, } from '../types/Users';
 import { Token } from './Token.service';
 import { SALT_ROUNDS } from '../configurations/conf';
 
@@ -30,7 +30,7 @@ export class Users {
         Vibration_proximity: false,
         range: {
           min: '',
-          max: ''
+          max: '',
         },
         coordinates: {
           latitude: 0,
@@ -41,29 +41,42 @@ export class Users {
       };
     }
     this.TokenService = new Token();
-
   }
-
 
   private validations(userInfo: UsersModel): boolean {
     const regex: string = '[a-zA-z]';
 
-    if (!userInfo.fullname || !userInfo.fullname.trim()) throw new Error('The name cannot be void');
-    if (!userInfo.password || !userInfo.password.trim() || userInfo.password.length < 6) throw new Error('The password cannot be void or have less than 6 characters');
-    if (!userInfo.email || !userInfo.email.trim()) throw new Error('The email cannot be void');
-    if (!userInfo.emergency_contact || !userInfo.emergency_contact.trim() || userInfo.emergency_contact.match(regex)) throw new Error('The emergency contact cannot be void or contain letters');
+    if (!userInfo.fullname || !userInfo.fullname.trim())
+      throw new Error('The name cannot be void');
+    if (
+      !userInfo.password ||
+      !userInfo.password.trim() ||
+      userInfo.password.length < 6
+    )
+      throw new Error(
+        'The password cannot be void or have less than 6 characters'
+      );
+    if (!userInfo.email || !userInfo.email.trim())
+      throw new Error('The email cannot be void');
+    if (
+      !userInfo.emergency_contact ||
+      !userInfo.emergency_contact.trim() ||
+      userInfo.emergency_contact.match(regex)
+    )
+      throw new Error(
+        'The emergency contact cannot be void or contain letters'
+      );
 
     return true;
   }
 
   public async createUser(): Promise<getDataSession> {
     if (this.info_users.email) {
-
       const userInfo = await this.getUser(this.info_users.email);
       if (typeof userInfo !== 'string') {
         return 'The user already exist';
-      }//check if the user does not exist yet
-      this.validations(this.info_users);//check if there's a problem with the data that was given
+      } //check if the user does not exist yet
+      this.validations(this.info_users); //check if there's a problem with the data that was given
 
       try {
         const creationUser = db.ref('Users').push();
@@ -72,7 +85,6 @@ export class Users {
         console.error(error);
         throw new Error(error.message);
       }
-
 
       if (!this.info_users.fullname || !this.info_users.email) {
         throw new Error('Error, one or some values were not provided');
@@ -84,13 +96,13 @@ export class Users {
           age: 0,
           email: this.info_users.email,
           fullname: this.info_users.fullname,
-          duration: '1h'
+          duration: '1h',
         }),
         refreshToken: this.TokenService.generateToken({
           age: 0,
           email: this.info_users.email,
           fullname: this.info_users.fullname,
-          duration: '7d'
+          duration: '7d',
         }),
       };
     }
@@ -102,17 +114,21 @@ export class Users {
     let userInfo: string | UsersModel;
     try {
       userInfo = await this.getUser(dataSession.email);
-      if (typeof userInfo === 'string') return userInfo;//verify if the data was sent correctly or there was an error
+      if (typeof userInfo === 'string') return userInfo; //verify if the data was sent correctly or there was an error
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
     }
 
     try {
-      if (typeof userInfo !== "string") {
-        if (!userInfo.password || !userInfo.email || !userInfo.fullname) return 'one or some values were not provided';
+      if (typeof userInfo !== 'string') {
+        if (!userInfo.password || !userInfo.email || !userInfo.fullname)
+          return 'one or some values were not provided';
 
-        const isPassCorrect: boolean = await bcrypt.compare(dataSession.password, userInfo.password);
+        const isPassCorrect: boolean = await bcrypt.compare(
+          dataSession.password,
+          userInfo.password
+        );
 
         if (isPassCorrect) {
           const { password: _, ...userInformation } = userInfo;
@@ -123,19 +139,85 @@ export class Users {
               age: 0,
               email: userInfo.email,
               fullname: userInfo.fullname,
-              duration: '1h'
+              duration: '1h',
             }),
             refreshToken: this.TokenService.generateToken({
               age: 0,
               email: userInfo.email,
               fullname: userInfo.fullname,
-              duration: '7d'
+              duration: '7d',
             }),
           };
         }
       }
 
       return 'There was an error with the data that was given';
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  public async addTag(tag: string[] | string, email: string) {
+    const userID = this.getUserId(email);
+    let tagsTemp: UsersModel;
+    try {
+      const tag = await db.ref('Users').orderByChild('email').equalTo(email).once('value');
+      const tagVal = tag.val();
+      const tagId = Object.keys(tagVal)[0];
+      tagsTemp = tagVal[tagId];
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+
+    try {
+      if (tagsTemp.tags) {
+        if (typeof tag === 'string') {
+          await db.ref('Users/' + userID).update({ tags: tagsTemp.tags.push(tag) });
+        } else {
+          const newTagsArray = (tagsTemp.tags.join(',') + tag.join(',')).split(',');
+          await db.ref('Users/' + userID).update({ tags: newTagsArray });
+        }
+      } else {
+        await db.ref('Users/' + userID).push().set({ tags: tag });
+      }
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  public async addSummary(summary: string, email: string) {
+    const userID = this.getUserId(email);
+
+    try {
+      await db.ref('Users/' + userID).update({ summary });
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  public async addPhoto(url: string) {
+    try {
+      //
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  public async addPhotos(urls: string[]) {
+    try {
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  public async addDiary(Diary: Diary) {
+    try {
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
@@ -161,7 +243,7 @@ export class Users {
 
   public async getUserId(email: string) {
     try {
-      const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value')
+      const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value');
       if (!response.exists()) {
         return 'That user does not exist';
       } else {

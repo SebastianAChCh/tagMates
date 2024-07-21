@@ -11,8 +11,8 @@ export const checkUserBanApp = async (req: Request, res: Response) => {
       fromApp: true
     });
     return res.json({ status: 200, response });
-  } catch (error) {
-    return res.json({ status: 500, error });
+  } catch (error: any) {
+    return res.json({ status: 500, error: error.message });
   }
 };
 
@@ -23,8 +23,8 @@ export const checkUserBan = async (req: Request, res: Response) => {
   try {
     const response = await BansUsers.checkUser({ user, email, fromApp: false });
     return res.json({ status: 200, response });
-  } catch (error) {
-    return res.json({ status: 500, error });
+  } catch (error: any) {
+    return res.json({ status: 500, error: error.message });
   }
 };
 
@@ -39,8 +39,8 @@ export const banApp = async (req: Request, res: Response) => {
     if (response === '') return res.json({ status: 200, message: 'User ban from app successfully' });
 
     return res.json({ status: 409, message: response });
-  } catch (error) {
-    return res.json({ status: 500, error });
+  } catch (error: any) {
+    return res.json({ status: 500, error: error.message });
   }
 };
 
@@ -52,10 +52,7 @@ export const banUser = async (req: Request, res: Response) => {
     if (response === '') return res.json({ status: 200, message: 'User ban from app successfully' });
 
     return res.json({ status: 409, message: response });
-  } catch (error) {
-    return res.json({
-      status: 500,
-      error,
-    });
+  } catch (error: any) {
+    return res.json({ status: 500, error: error.message });
   }
 };

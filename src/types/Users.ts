@@ -8,8 +8,8 @@ export type UsersModel = {
     emergency_contact?: string,
     avatar_path?: string,
     coordinates?: Coordinates,
-    tags?: [],
-    pictures?: [],
+    tags?: string[],
+    pictures?: string[],
     summary?: string,
     rating?: number,
     Vibration_proximity?: boolean,
@@ -43,3 +43,16 @@ export type getDataSession = {
 } | string;
 
 export type informationUser = UsersModel | string;
+
+export type Diary = {
+    userA: string
+    userB: string
+    DiaryInfo: DiaryInformation
+}
+
+export type DiaryInformation = {
+    experience: string
+    rating: string
+    pictures_date: string
+    emotion: string
+}

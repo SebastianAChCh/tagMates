@@ -3,18 +3,25 @@ import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from '../configurations/conf';
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.cookies.access_token;
     if (!token) {
         return res.status(401).json({
             error: 'There was an error with the authentication'
         });
     }
+
     try {
         const isUserAuth = jwt.verify(token, SECRET_KEY);
 
-        if (!isUserAuth) {
+        if (!isUserAuth || typeof isUserAuth === 'string') {
             return res.status(401).json({
                 error: 'There was a problem with the authentication'
+            });
+        }
+
+        if (isUserAuth.email !== req.body.email) {
+            return res.status(401).json({
+                error: 'Something went wrong'
             });
         }
 
