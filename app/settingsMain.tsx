@@ -1,65 +1,77 @@
-import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan'; 
-import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+import SettingIcon from '../components/SettingIcon';
+import { useAuth } from '../providers/Authentication';
 
 const SettingsScreen: React.FC = () => {
+  const { getProximityState, INITIAL_URL, userInfo } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const executeGetProximityState = async () => {
+    if (getProximityState) {
+      const stateProximity = await getProximityState();
+      if (typeof stateProximity === 'boolean') {
+        setIsEnabled(stateProximity);
+      } else {
+        console.error(stateProximity);
+      }
+    }
+  }
+  useMemo(() => executeGetProximityState(), []);
+
+  useEffect(() => {
+    if (typeof isEnabled === 'boolean') {
+      handleProximityState();
+    }
+  }, [isEnabled]);
+
+  const toggleSwitch = () => {
+    setIsEnabled(previousState => !previousState);
+  }
 
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
 
-  if (!fontsLoaded) {
-    return <Text>Cargando...</Text>; 
+  const handleProximityState = async () => {
+    try {
+      await fetch(`${INITIAL_URL}/changeProximityState`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userInfo?.email,
+          state: isEnabled
+        })
+      });
+
+    } catch (error) {
+      if (error instanceof Error) console.error(error.message);
+    }
   }
+
+  if (!fontsLoaded) {
+    return <Text>Cargando...</Text>;
+  }
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <ScrollView style={styles.scrollView}>
         <Text style={styles.headerTitle}>Settings</Text>
 
+        <SettingIcon icon='chevron-right' route='Location' src={require('../assets/images/location.png')} />
 
+        <SettingIcon icon='chevron-right' route='Notifications' src={require('../assets/images/notification.png')} />
 
-        <TouchableOpacity>
-          <View style={styles.optionItem}>
-          <Image source={require('../assets/images/location.png')}
-          style={styles.image}/>
-          <Text style={styles.optionText}>Location</Text>
-          <Icon name="chevron-right" size={15} color="#000" />
-        </View>
-        </TouchableOpacity>
+        <SettingIcon icon='chevron-right' route='Blocks' src={require('../assets/images/block.png')} />
 
-        <TouchableOpacity>
-        <View style={styles.optionItem}>
-        <Image source={require('../assets/images/notification.png')}
-          style={styles.image}/>
-          <Text style={styles.optionText}>Notifications</Text>
-          <Icon name="chevron-right" size={15} color="#000" />
-        </View>
-        </TouchableOpacity>
-        
-        <TouchableOpacity>
-        <View style={styles.optionItem}>
-        <Image source={require('../assets/images/block.png')}
-          style={styles.image}/>
-          <Text style={styles.optionText}>Blocks</Text>
-          <Icon name="chevron-right" size={15} color="#000" />
-        </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-        <View style={styles.optionItem}>
-        <Image source={require('../assets/images/heart.png')}
-          style={styles.image}/>
-          <Text style={styles.optionText}>Search Preferences</Text>
-          <Icon name="chevron-right" size={15} color="#000" />
-        </View>
-        </TouchableOpacity>
+        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/heart.png')} />
 
         <View style={styles.switchContainer}>
-        <Image source={require('../assets/images/proximity.png')}
-          style={styles.image}/>
+          <Image source={require('../assets/images/proximity.png')}
+            style={styles.image} />
           <Text style={styles.optionText}>Proximity Vibration</Text>
           <Switch
             trackColor={{ false: "#767577", true: "#00A19D" }}
@@ -88,8 +100,8 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,

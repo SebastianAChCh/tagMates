@@ -11,6 +11,8 @@ type propsContext = {
     userInfo?: userData | undefined;
     loginSuccess?: boolean;
     setLoginSuccess?: Dispatch<React.SetStateAction<boolean>>
+    getProximityState?: () => Promise<boolean | string>
+    INITIAL_URL?: string
 };
 
 type PropsProvider = {
@@ -177,8 +179,34 @@ const AuthProvider = ({ children }: PropsProvider) => {
         }
     };
 
+    const getProximityState = async (): Promise<boolean | string> => {
+        try {
+            const response = await fetch(`${INITIAL_URL}/getProximityState`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: userInfo?.email
+                })
+            });
+
+            const proximityState: { status: number, information?: boolean, error?: string } = await response.json();
+            if (proximityState.status !== 200 && proximityState.error) {
+                return proximityState.error;
+            } else if (proximityState.information) {
+                return proximityState.information;
+            }
+
+        } catch (error) {
+            if (error instanceof Error) console.error(error.message);
+        }
+
+        return false;
+    }
+
     return (
-        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo, loginSuccess, setLoginSuccess }}>
+        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo, loginSuccess, setLoginSuccess, getProximityState, INITIAL_URL }}>
             {children}
         </Auth.Provider>
     );

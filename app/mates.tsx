@@ -7,15 +7,15 @@ const MatesScreen = () => {
     { id: '2', name: 'Juan Butera', image: '../assets/images/chat.png', matchPercentage: '50%' },
   ]);
 
-  const confirmRequest = (id) => {
+  const confirmRequest = (id: any) => {
     console.log(`Confirmando solicitud con id: ${id}`);
   };
 
-  const deleteRequest = (id) => {
+  const deleteRequest = (id: any) => {
     setRequests((prevRequests) => prevRequests.filter((request) => request.id !== id));
   };
 
-  const renderRequestItem = ({ item }) => (
+  const renderRequestItem = ({ item }: { item: any }) => (
     <View style={styles.requestContainer}>
       <Image source={{ uri: item.image }} style={styles.avatar} />
       <View style={styles.infoContainer}>
@@ -23,7 +23,7 @@ const MatesScreen = () => {
         <Text style={styles.matchPercentage}>{item.matchPercentage}</Text>
       </View>
       <TouchableOpacity style={styles.confirmButton} onPress={() => confirmRequest(item.id)}>
-        <Text style={styles.confirmButtonText}>Confirmar</Text>/hhhhhhhh
+        <Text style={styles.confirmButtonText}>Confirmar</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
         <Text style={styles.deleteButtonText}>Eliminar</Text>
@@ -33,23 +33,23 @@ const MatesScreen = () => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-        <View style={styles.container}>
-      <Text style={styles.title}>Zaps</Text>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Sugerencias</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Mis mates</Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        <Text style={styles.title}>Zaps</Text>
+        <View style={styles.tabContainer}>
+          <TouchableOpacity style={styles.tabButton}>
+            <Text style={styles.tabButtonText}>Sugerencias</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tabButton}>
+            <Text style={styles.tabButtonText}>Mis mates</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.subtitle}>Solicitudes de zap</Text>
+        <FlatList
+          data={requests}
+          keyExtractor={(item) => item.id}
+          renderItem={renderRequestItem}
+        />
       </View>
-      <Text style={styles.subtitle}>Solicitudes de zap</Text>
-      <FlatList
-        data={requests}
-        keyExtractor={(item) => item.id}
-        renderItem={renderRequestItem}
-      />
-    </View>
     </SafeAreaView>
   );
 };
@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#00A19D',

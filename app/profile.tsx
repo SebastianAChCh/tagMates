@@ -1,63 +1,105 @@
-
 import { Image, ScrollView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan'
+import { useEffect, useState } from 'react';
+import { useAuth } from '../providers/Authentication';
+import { UsersTp } from '../types/Users';
 
-export default function ProfileScreen({ navigation }) {
-    const [fontsLoaded] = useFonts({
-      LeagueSpartan_800ExtraBold,
-    });
+export default function ProfileScreen({ router, navigation }: { router: any, navigation: any }) {
+  const [infoUser, setInfoUser] = useState<UsersTp>();
+  const { INITIAL_URL, userInfo } = useAuth();
+  const [fontsLoaded] = useFonts({
+    LeagueSpartan_800ExtraBold,
+  });
+
+  const getDataProfile = async () => {
+    try {
+      const response = await fetch(`${INITIAL_URL}/getInformationUser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userInfo?.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (typeof data !== 'string') {
+        setInfoUser(data.information);
+      }
+
+    } catch (error) {
+      if (error instanceof Error) console.error(error.message);
+    }
+
+  }
+
+  useEffect(() => {
+    getDataProfile();
+  }, []);
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <ScrollView style={styles.scrollView}>
-      <Text style={styles.headerTitle}>Profile</Text>
-        <View style={styles.header}>
-          <Image source={require('../assets/friend1.png')} style={styles.avatar} />
-          <Text style={styles.nameTitle}>Juan Butera</Text>
-        </View>
+      {
+        !infoUser ? (
+          <View><Text>Loading...</Text></View>
+        ) : (
+          <ScrollView style={styles.scrollView}>
+            <Text style={styles.headerTitle}>Profile</Text>
+            <View style={styles.header}>
+              <Image source={require('../assets/friend1.png')} style={styles.avatar} />
+              <Text style={styles.nameTitle}>{infoUser.fullname}</Text>
+            </View>
 
-        <View>
-        <Text style={styles.text1}>Description</Text>
-                <View style={styles.box}>
-                    <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
-                    
-                </View>
+            <View>
+              <Text style={styles.text1}>Description</Text>
+              <View style={styles.box}>
+                <Text style={styles.text2}>{!infoUser.summary ? 'There is no summary yet' : infoUser.summary}</Text>
+              </View>
 
-        <Text style={styles.text1}>My Tags</Text>
-                <View style={styles.box}>
-                    <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
-                    
-                </View>
-                
-        <Text style={styles.text1}>My Photos</Text>
-        <View style={styles.marginPh}>
+              <Text style={styles.text1}>My Tags</Text>
+              <View style={styles.box}>
+                {
+                  !infoUser.tags ? (
+                    <Text style={styles.text2}>There are not tag yet</Text>
+                  ) :
+                    infoUser.tags?.map(tag => {
+                      return (<Text style={styles.text2}>{tag}</Text>)
+                    })
+                }
+              </View>
+
+              <Text style={styles.text1}>My Photos</Text>
+              <View style={styles.marginPh}>
                 <View style={styles.box2}></View>
                 <View style={styles.box2}></View>
                 <View style={styles.box2}></View>
-        </View>
+              </View>
 
-        </View>
+            </View>
 
-        
-
-        </ScrollView>
+          </ScrollView>
+        )
+      }
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    AndroidSafeArea: {
-        flex: 1,
-        backgroundColor: "white",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-      },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
   flexOne: {
     flex: 1
   },
 
   headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
@@ -66,8 +108,8 @@ const styles = StyleSheet.create({
   },
 
   text1: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 20, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: 'black',
@@ -75,8 +117,8 @@ const styles = StyleSheet.create({
   },
 
   text2: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 15, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 15,
     marginBottom: 5,
     marginTop: 5,
     color: 'black',
@@ -85,7 +127,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    
+
   },
 
   marginPh: {
@@ -117,8 +159,8 @@ const styles = StyleSheet.create({
 
 
   nameTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     color: 'black',
   },
