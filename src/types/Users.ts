@@ -16,6 +16,26 @@ export type UsersModel = {
     range?: range
 };
 
+export type Tags = {
+    tags: string[] | string
+    email: string
+}
+
+export type Summary = {
+    summary: string
+    email: string
+}
+
+export type Photo = {
+    url: string
+    email: string
+}
+
+export type Pictures = {
+    urls: string[] | string
+    email: string
+}
+
 export type UserNewInfo = {
     userNewInfo: Partial<UsersModel>
     email: string
@@ -44,15 +64,3 @@ export type getDataSession = {
 
 export type informationUser = UsersModel | string;
 
-export type Diary = {
-    userA: string
-    userB: string
-    DiaryInfo: DiaryInformation
-}
-
-export type DiaryInformation = {
-    experience: string
-    rating: string
-    pictures_date: string
-    emotion: string
-}

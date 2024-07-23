@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { Diary, getDataSession, informationUser, logIn, UserNewInfo, UsersModel, } from '../types/Users';
+import { dbRealTime as db, dbFirestore as normalDB } from '../configurations/firebaseAdmin';
+import { getDataSession, informationUser, logIn, Photo, Pictures, Summary, Tags, UserNewInfo, UsersModel, } from '../types/Users';
 import { Token } from './Token.service';
 import { SALT_ROUNDS } from '../configurations/conf';
 
@@ -158,71 +158,52 @@ export class Users {
     }
   }
 
-  public async addTag(tag: string[] | string, email: string) {
-    const userID = this.getUserId(email);
-    let tagsTemp: UsersModel;
-    try {
-      const tag = await db.ref('Users').orderByChild('email').equalTo(email).once('value');
-      const tagVal = tag.val();
-      const tagId = Object.keys(tagVal)[0];
-      tagsTemp = tagVal[tagId];
-    } catch (error: any) {
-      console.error(error);
-      throw new Error(error.message);
-    }
+  //
+  public async addTags(tagsData: Tags): Promise<void> {
+    const userID = this.getUserId(tagsData.email);
 
     try {
-      if (tagsTemp.tags) {
-        if (typeof tag === 'string') {
-          await db.ref('Users/' + userID).update({ tags: tagsTemp.tags.push(tag) });
-        } else {
-          const newTagsArray = (tagsTemp.tags.join(',') + tag.join(',')).split(',');
-          await db.ref('Users/' + userID).update({ tags: newTagsArray });
-        }
-      } else {
-        await db.ref('Users/' + userID).push().set({ tags: tag });
-      }
+      await db.ref('Users/' + userID).update({ tags: tagsData.tags });
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
     }
   }
 
-  public async addSummary(summary: string, email: string) {
-    const userID = this.getUserId(email);
+  public async addSummary(summaryData: Summary) {
+    const userID = this.getUserId(summaryData.email);
 
     try {
-      await db.ref('Users/' + userID).update({ summary });
+      await db.ref('Users/' + userID).update({ summary: summaryData.summary });
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
     }
   }
 
-  public async addPhoto(url: string) {
+  public async addPhoto(photo: Photo) {
+    const userID = this.getUserId(photo.email);
+
     try {
-      //
+      await db.ref('Users/' + userID).update({ avatar_path: photo.url });
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
     }
   }
 
-  public async addPhotos(urls: string[]) {
+  public async addPhotos(pictures: Pictures) {
+    const userID = this.getUserId(pictures.email);
+
     try {
+      await db.ref('Users/' + userID).update({ pictures: pictures.urls });
     } catch (error: any) {
       console.error(error);
       throw new Error(error.message);
     }
   }
 
-  public async addDiary(Diary: Diary) {
-    try {
-    } catch (error: any) {
-      console.error(error);
-      throw new Error(error.message);
-    }
-  }
+  //
 
   public async getUser(email: string): Promise<informationUser> {
     try {
