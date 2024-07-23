@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveFileMessages = exports.loadMessages = exports.saveTextMessages = void 0;
 const fs_1 = __importDefault(require("fs"));
 const Messages_service_1 = require("../../services/Messages.service");
+const path_1 = require("path");
 const saveTextMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const messages = new Messages_service_1.MessagesSocket(req.body.email);
     try {
@@ -32,10 +33,12 @@ const saveTextMessages = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.saveTextMessages = saveTextMessages;
 const loadMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = req.body;
     try {
+        const messages = new Messages_service_1.MessagesSocket(req.body.email);
+        const response = yield messages.loadMessages(req.body.user);
         return res.json({
             status: 200,
+            response
         });
     }
     catch (error) {
@@ -46,16 +49,31 @@ const loadMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.loadMessages = loadMessages;
+let responseSent = false;
 const saveFileMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     req.pipe(req.busboy);
-    req.busboy.on('file', (fieldname, file, filename) => {
-        const newFile = fs_1.default.createWriteStream(`/${filename}`);
-        file.pipe(newFile);
-        newFile.on('close', () => {
-            res.json({
-                status: 200,
-                message: 'File saved successfully'
-            });
+    const body = {};
+    const pathSrc = (0, path_1.resolve)(__dirname, '../../');
+    req.busboy.on('field', (fieldname, val) => body[fieldname] = val); //Save the data of the body in a object called "body"
+    req.busboy.on('file', (_, file, filename) => {
+        if (!fs_1.default.existsSync((0, path_1.join)(pathSrc, 'uploads', `${body['email']}`))) { //check if the folder exist
+            fs_1.default.mkdirSync((0, path_1.join)(pathSrc, 'uploads', `${body['email']}`)); //if does not exist, then create it            
+        }
+        if (!fs_1.default.existsSync((0, path_1.join)(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`))) { //check if the folder exist
+            fs_1.default.mkdirSync((0, path_1.join)(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`)); //if does not exist, then create it
+        }
+        const dirPath = (0, path_1.join)(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`, String(filename.filename));
+        const createFile = fs_1.default.createWriteStream(dirPath);
+        file.pipe(createFile);
+        createFile.on('close', () => {
+            responseSent = true;
+            return res.json({ status: 200, message: 'File saved successfully' });
+        });
+        createFile.on('error', (err) => {
+            console.error('There was an error saving the file', err);
+            if (!responseSent) {
+                return res.json({ status: 200, message: 'There was an error saving the file' });
+            }
         });
     });
 });

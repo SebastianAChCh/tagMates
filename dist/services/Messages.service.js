@@ -11,66 +11,87 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesSocket = void 0;
 const firebaseAdmin_1 = require("../configurations/firebaseAdmin");
-const Contacts_service_1 = require("./Contacts.service");
+const uuid_1 = require("uuid");
 class MessagesSocket {
     constructor(email) {
         this.email = email;
-        this.Contacts = new Contacts_service_1.Contacts();
     }
     saveMessages(Message) {
         return __awaiter(this, void 0, void 0, function* () {
-            let otherEmail = ''; //it will contains the contact at which the user is talking
-            if (Message.sender === this.email) {
-                otherEmail = Message.receiver;
-            }
-            else {
-                otherEmail = Message.sender;
-            }
-            const contactExist = yield this.Contacts.getContact(this.email, otherEmail);
+            let user = ''; //It w contains the contact at which the user is talking
+            if (Message.sender === this.email)
+                user = Message.receiver;
+            else
+                user = Message.sender;
             let ID;
-            if (contactExist.length < 1) {
-                ID = firebaseAdmin_1.dbFirestore.collection('Conversations').doc().id;
-                const newContact = {
-                    email: this.email,
-                    otherEmail,
-                    ID
-                };
-                this.Contacts.saveContacts(newContact);
-            }
-            else {
-                ID = yield this.getMessagesId(this.email, otherEmail); //ID of the document where the messages are
+            ID = yield this.getConversationId(user);
+            if (!ID) {
+                ID = (0, uuid_1.v7)(); //Generating and ID, it needs to be replaced in a future
+                this.saveConversationID(user, ID); //Saving also the id of the document where the messages are
             }
             try {
-                yield firebaseAdmin_1.dbFirestore.collection('Conversations').doc(ID).collection('Messages').add(Message);
+                yield firebaseAdmin_1.dbFirestore.collection('Conversations').doc(ID).collection('Messages').add(Object.assign(Object.assign({}, Message), { date: firebaseAdmin_1.Timestamp.now() }));
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
+            }
+        });
+    }
+    saveConversationID(user, ID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield firebaseAdmin_1.dbFirestore.collection('ConversationID').doc(this.email).collection('Contacts').add({
+                    'Username': user,
+                    'Id': ID
+                });
+            }
+            catch (error) {
+                console.error(error);
+                throw new Error(error.message);
+            }
+            try {
+                yield firebaseAdmin_1.dbFirestore.collection('ConversationID').doc(user).collection('Contacts').add({
+                    'Username': this.email,
+                    'Id': ID
+                });
+            }
+            catch (error) {
+                console.error(error);
+                throw new Error(error.message);
             }
         });
     }
     //This method will return the id of the document where the messages are in the collection "Conversations"
-    getMessagesId(userA, userB) {
+    getConversationId(user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const resultMessagesID = yield firebaseAdmin_1.dbFirestore.collection('MessagesID').doc(userA).collection('Contacts').where('User.Username', '==', userB).get();
-                return resultMessagesID.docs[0].data().User.ID;
+                const resultMessagesID = yield firebaseAdmin_1.dbFirestore.collection('ConversationID').doc(this.email).collection('Contacts').where('Username', '==', user).get();
+                if (resultMessagesID.docs.length < 1) {
+                    return null;
+                }
+                return resultMessagesID.docs[0].data().Id;
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
             }
         });
     }
-    loadMessages(id) {
+    loadMessages(user) {
         return __awaiter(this, void 0, void 0, function* () {
+            const conversationID = yield this.getConversationId(user);
+            let messages;
             try {
-                // const Messages = await db.collection('Conversations').doc(id).collection('Messages').where();
-                // return Messages;
+                messages = yield firebaseAdmin_1.dbFirestore.collection('Conversations').doc(conversationID).collection('Messages').where('sender', '==', user).get();
+                if (!messages) {
+                    messages = yield firebaseAdmin_1.dbFirestore.collection('Conversations').doc(conversationID).collection('Messages').where('receiver', '==', user).get();
+                }
+                return messages;
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
             }
         });
     }

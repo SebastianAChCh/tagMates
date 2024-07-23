@@ -9,19 +9,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCurrentPosition = void 0;
-const Users_service_1 = require("../../services/Users.service");
+exports.getProximityState = exports.changeProximityState = exports.updateCurrentPosition = void 0;
+const Positions_service_1 = require("../../services/Positions.service");
 const updateCurrentPosition = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coordinates, email } = req.body;
+    const userNewPos = new Positions_service_1.Positions();
     try {
-        const userNewPos = new Users_service_1.Users(null);
-        yield userNewPos.updateCoordinates(coordinates, email);
+        yield userNewPos.updateCoordinates({ coordinates, email });
         return res.json({ status: 200 });
     }
     catch (error) {
         console.error(error);
-        return res.json({ status: 500, error });
+        return res.json({ status: 500, error: error instanceof Error ? error.message : '' });
     }
 });
 exports.updateCurrentPosition = updateCurrentPosition;
+const changeProximityState = (req, res) => {
+    const proximityState = new Positions_service_1.Positions();
+    try {
+        proximityState.changeProximityState(req.body);
+        return res.json({ status: 200 });
+    }
+    catch (error) {
+        console.error(error);
+        return res.json({ status: 500, error: error instanceof Error ? error.message : '' });
+    }
+};
+exports.changeProximityState = changeProximityState;
+const getProximityState = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email } = req.body;
+    const proximityState = new Positions_service_1.Positions();
+    try {
+        const response = yield proximityState.getProximityState(email);
+        if (typeof response === 'string') {
+            return res.json({ status: 404, error: response });
+        }
+        return res.json({ status: 200, information: response.Vibration_proximity });
+    }
+    catch (error) {
+        console.error(error);
+        return res.json({ status: 500, error: error instanceof Error ? error.message : '' });
+    }
+});
+exports.getProximityState = getProximityState;
 //# sourceMappingURL=Position.controller.js.map

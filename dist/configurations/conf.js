@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.api_secret = exports.api_key = exports.cloud_name = exports.measurementId = exports.appId = exports.messagingSenderId = exports.storageBucket = exports.projectId = exports.authDomain = exports.apiKey = exports.PORT = void 0;
+exports.NODE_ENV = exports.SECRET_KEY = exports.SALT_ROUNDS = exports.api_secret = exports.api_key = exports.cloud_name = exports.measurementId = exports.appId = exports.messagingSenderId = exports.storageBucket = exports.projectId = exports.authDomain = exports.apiKey = exports.PORT = void 0;
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 exports.PORT = process.env.PORT || 3000;
@@ -14,4 +14,7 @@ exports.measurementId = process.env.measurementId;
 exports.cloud_name = process.env.cloud_name;
 exports.api_key = process.env.api_key;
 exports.api_secret = process.env.api_secret;
+exports.SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
+exports.SECRET_KEY = String(process.env.SECRET_KEY);
+exports.NODE_ENV = String(process.env.NODE_ENV);
 //# sourceMappingURL=conf.js.map

@@ -15,19 +15,18 @@ class Contacts {
     getContact(email, contact) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const Contacts = yield firebaseAdmin_1.dbFirestore.collection('Contacts').where('email', '==', email).limit(1).get();
-                if (Contacts.docs[0]) {
-                    const users = Contacts.docs[0].data().Contacts;
-                    const data = users.filter(user => user === contact);
-                    return data;
+                const ContactsInfo = yield firebaseAdmin_1.dbFirestore.collection('Contacts').doc(email).collection('Users').where('email', '==', contact).get();
+                if (ContactsInfo.docs[0]) {
+                    const users = ContactsInfo.docs;
+                    const data = users.filter(user => user._fieldsProto.email.stringValue === contact);
+                    return data[0]._fieldsProto.email;
                 }
-                else {
-                    return [];
-                }
+                else
+                    return null;
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
             }
         });
     }
@@ -39,21 +38,22 @@ class Contacts {
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
             }
         });
     }
     saveContacts(contact) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield firebaseAdmin_1.dbFirestore.collection('Contacts').doc(contact.email).collection('Users').add({ email: contact.otherEmail });
+                yield firebaseAdmin_1.dbFirestore.collection('Contacts').doc(contact.email).collection('Users').add({ email: contact.user });
             }
             catch (error) {
                 console.error(error);
-                throw new Error(String(error));
+                throw new Error(error.message);
             }
         });
     }
 }
 exports.Contacts = Contacts;
+;
 //# sourceMappingURL=Contacts.service.js.map
