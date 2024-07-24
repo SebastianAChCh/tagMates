@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { banApp, banUser, checkUserBan, checkUserBanApp } from './controllers/Bans.controller'
+import { banApp, banUser, checkUserBan } from './controllers/Bans.controller'
 
 const router = Router();
 

@@ -3,6 +3,6 @@ import { loadMessages } from "./controllers/Taggy.controller";
 
 const router = Router();
 
-router.post('/loadMessages', loadMessages);
+router.post('/loadMessagesTaggy', loadMessages);
 
 export default router;

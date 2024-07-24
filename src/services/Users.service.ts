@@ -122,13 +122,14 @@ export class Users {
 
     try {
       if (typeof userInfo !== 'string') {
-        if (!userInfo.password || !userInfo.email || !userInfo.fullname)
-          return 'one or some values were not provided';
+        if (!userInfo.password || !userInfo.email || !userInfo.fullname) return 'one or some values were not provided';
 
         const isPassCorrect: boolean = await bcrypt.compare(
           dataSession.password,
           userInfo.password
         );
+
+        console.log('paso por aqui');
 
         if (isPassCorrect) {
           const { password: _, ...userInformation } = userInfo;

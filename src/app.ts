@@ -31,7 +31,7 @@ const socketIo = new Server(nodeServer, {
 });
 
 
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.text());
