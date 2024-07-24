@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, Image, Modal, Platform, StatusBar, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
+import { View, Text, FlatList, Image, Modal, Platform, StatusBar, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import Header from '../components/Header';
 
 export default function DiaryScreen() {
   const [rating, setRating] = useState(0);
@@ -26,7 +27,7 @@ export default function DiaryScreen() {
 
   <SafeAreaView style={styles.AndroidSafeArea}>
     <View style={styles.container}>
-      <Text style={styles.title}>Diary</Text>
+    <Header title='Diary' navigation={Header} />
       
       <TouchableOpacity style={styles.selector} onPress={toggleModal}>
         <Text>{selectedMate}</Text>

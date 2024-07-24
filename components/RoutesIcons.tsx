@@ -6,7 +6,7 @@ const RoutesIcons = ({ navigation, src, route }: { navigation: any; src: ImageSo
             <TouchableOpacity onPress={() => navigation.navigate(route)}>
                 <Image
                     source={src}
-                    style={styles.imgMin}
+                    style={route === "Profile" ? styles.imgRed: styles.imgMin}
                     resizeMode="stretch"
                 />
             </TouchableOpacity>
@@ -37,6 +37,12 @@ const styles = StyleSheet.create({
     imgMin: {
         width: 35,
         height: 35,
+    },
+
+    imgRed: {
+        width: 35,
+        height: 35,
+        borderRadius: 100
     },
 
     textMin: {

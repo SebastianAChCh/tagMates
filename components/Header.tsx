@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Header = ({ navigation }: { navigation: any }) => {
+const Header = ({ navigation, title }: { navigation: any, title: string }) => {
     return (
         <View style={styles.headerContainer}>
             <View style={styles.logoContainer}>
@@ -10,7 +10,7 @@ const Header = ({ navigation }: { navigation: any }) => {
                         { fontFamily: 'LeagueSpartan_800ExtraBold' },
                     ]}
                 >
-                    TagMates
+                    {title}
                 </Text>
 
                 <Image

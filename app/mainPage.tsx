@@ -61,7 +61,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
       </MapView>
 
-      <Header navigation={navigation} />
+      <Header navigation={navigation} title='TagMates' />
 
       <Menu navigation={navigation} />
     </SafeAreaView>

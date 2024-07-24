@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as React from 'react';
+import Header from '../components/Header';
 
 interface Message {
   id: number;
   text: string;
 }
 
-const TaggyScreen: React.FC = ( { navigation } ) => {
+const TaggyScreen = ( { navigation } : {navigation : any}) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
@@ -24,9 +25,9 @@ const TaggyScreen: React.FC = ( { navigation } ) => {
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
-      <Text style={styles.headerTitle}>Taggy</Text>
+      <Header title='Taggy' navigation={Header} />
         <View style={styles.header}>
-          <Image source={require('../assets/images/ron.jpeg')} style={styles.avatar} />
+          <View style={styles.shadowV}><Image source={require('../assets/images/ron.jpeg')} style={styles.avatar}/></View>
             <View>
             <TouchableOpacity onPress={() => navigation.navigate('Diary')}>
               <Image source={require('../assets/images/diary.png')} style={styles.diary} /></TouchableOpacity>
@@ -90,8 +91,22 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 100,
     marginHorizontal: 10,
-    elevation: 50
+    elevation: 50,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    borderWidth: 4,
   },
+
+  shadowV: {
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    backgroundColor: 'white',
+    borderRadius: 100
+  },
+
   diary: {
     height: 20,
     width: 20,

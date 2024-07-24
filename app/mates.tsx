@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
+import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import Header from '../components/Header';
 
 const MatesScreen = () => {
   const [requests, setRequests] = useState([
@@ -23,10 +24,10 @@ const MatesScreen = () => {
         <Text style={styles.matchPercentage}>{item.matchPercentage}</Text>
       </View>
       <TouchableOpacity style={styles.confirmButton} onPress={() => confirmRequest(item.id)}>
-        <Text style={styles.confirmButtonText}>Confirmar</Text>
+        <Text style={styles.confirmButtonText}>Confirm</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
-        <Text style={styles.deleteButtonText}>Eliminar</Text>
+        <Text style={styles.deleteButtonText}>Delete</Text>
       </TouchableOpacity>
     </View>
   );
@@ -34,16 +35,16 @@ const MatesScreen = () => {
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.container}>
-        <Text style={styles.title}>Zaps</Text>
+      <Header title='Zaps' navigation={Header} />
         <View style={styles.tabContainer}>
           <TouchableOpacity style={styles.tabButton}>
-            <Text style={styles.tabButtonText}>Sugerencias</Text>
+            <Text style={styles.tabButtonText}>Suggestions</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.tabButton}>
-            <Text style={styles.tabButtonText}>Mis mates</Text>
+            <Text style={styles.tabButtonText}>My mates</Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.subtitle}>Solicitudes de zap</Text>
+        <Text style={styles.subtitle}>Zap Requests</Text>
         <FlatList
           data={requests}
           keyExtractor={(item) => item.id}

@@ -1,15 +1,18 @@
 import { Image, ScrollView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useFonts } from 'expo-font';
-import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan'
+import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../providers/Authentication';
 import { UsersTp } from '../types/Users';
+import Header from '../components/Header';
+import AddButton from '../components/AddButton';
 
 export default function ProfileScreen({ router, navigation }: { router: any, navigation: any }) {
   const [infoUser, setInfoUser] = useState<UsersTp>();
   const { INITIAL_URL, userInfo } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
+    LeagueSpartan_600SemiBold,
+    LeagueSpartan_400Regular,
   });
 
   const getDataProfile = async () => {
@@ -47,9 +50,9 @@ export default function ProfileScreen({ router, navigation }: { router: any, nav
           <View><Text>Loading...</Text></View>
         ) : (
           <ScrollView style={styles.scrollView}>
-            <Text style={styles.headerTitle}>Profile</Text>
+            <Header title='Profile' navigation={navigation} />
             <View style={styles.header}>
-              <Image source={require('../assets/friend1.png')} style={styles.avatar} />
+              <View style={styles.shadowV}><Image source={require('../assets/friend1.png')} style={styles.avatar} /></View>
               <Text style={styles.nameTitle}>{infoUser.fullname}</Text>
             </View>
 
@@ -62,21 +65,30 @@ export default function ProfileScreen({ router, navigation }: { router: any, nav
               <Text style={styles.text1}>My Tags</Text>
               <View style={styles.box}>
                 {
-                  !infoUser.tags ? (
-                    <Text style={styles.text2}>There are not tag yet</Text>
-                  ) :
+                  !infoUser.tags ? (<>
+                    <Text style={styles.text2}>There are not tags yet</Text>
+                    <View style={styles.addTabButton}>
+                      <AddButton/>                      
+                    </View>
+                  </>) :
                     infoUser.tags?.map(tag => {
-                      return (<Text style={styles.text2}>{tag}</Text>)
+                      return (<>
+                      <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View>
+                        <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View>
+                        <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View></>
+                          )
                     })
                 }
               </View>
 
               <Text style={styles.text1}>My Photos</Text>
+        <ScrollView horizontal={true}>
               <View style={styles.marginPh}>
                 <View style={styles.box2}></View>
                 <View style={styles.box2}></View>
                 <View style={styles.box2}></View>
               </View>
+        </ScrollView>
 
             </View>
 
@@ -90,8 +102,8 @@ export default function ProfileScreen({ router, navigation }: { router: any, nav
 const styles = StyleSheet.create({
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#FFFFFF',
   },
   flexOne: {
     flex: 1
@@ -117,7 +129,7 @@ const styles = StyleSheet.create({
   },
 
   text2: {
-    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontFamily: 'LeagueSpartan_400Regular',
     fontSize: 15,
     marginBottom: 5,
     marginTop: 5,
@@ -132,6 +144,7 @@ const styles = StyleSheet.create({
 
   marginPh: {
     flexDirection: 'row',
+    
   },
 
 
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     borderColor: '#00A19D',
-    borderWidth: 2,
+    borderWidth: 0.5,
     marginLeft: 20,
     marginRight: 20
   },
@@ -152,9 +165,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     borderColor: '#00A19D',
-    borderWidth: 2,
+    borderWidth: 0.5,
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 0
   },
 
 
@@ -168,18 +181,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#fff',
   },
   avatar: {
-    width: 150,
-    height: 190,
-    borderRadius: 0,
-    marginTop: 5,
-    elevation: 3,
+    width: 160,
+    height: 160,
+    borderRadius: 100,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    borderWidth: 4,
+    marginTop: 0,
+  
+  },
+  shadowV: {
+    elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    backgroundColor: 'white',
+    borderRadius: 100
   },
   username: {
     fontWeight: 'bold',
@@ -233,5 +253,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 60,
-  }
+  },
+
+  tabButton: {
+    marginRight: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 20,
+    maxWidth: 100,
+    flexWrap: 'wrap',
+    flexShrink: 1,
+  },
+
+  tabButtonText: {
+    fontSize: 16,
+    fontFamily: 'LeagueSpartan_400Regular',
+    left: 3,
+    textAlign: "center"
+  },
+
+  addTabButton: {
+    marginRight: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flexShrink: 1,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: '80%'
+  },
+
+  addTabButtonText: {
+    fontSize: 25,
+    fontFamily: 'LeagueSpartan_400Regular',
+    left: 3,
+    textAlign: "center"
+  },
 });

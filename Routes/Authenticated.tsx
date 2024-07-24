@@ -24,7 +24,7 @@ const Authenticated = () => {
             <Stack.Screen name="Chat" component={Chat} />
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Health" component={HealthScreen} />
-            <Stack.Screen name="Taggy" component={TaggyScreen} />
+            <Stack.Screen name="Taggie" component={TaggyScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="profilePerson" component={ProfilePersonScreen} />
             <Stack.Screen name="Diary" component={DiaryScreen} />

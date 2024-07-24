@@ -1,6 +1,7 @@
 import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React, { useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
+import Header from '../components/Header';
 
 
 const HealthScreen: React.FC = () => {
@@ -17,7 +18,7 @@ const HealthScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.headerTitle}>Health</Text>
+      <Header title='Health' navigation={Header} />
 
         <View style={styles.margin}>
           <View style={styles.box}>
