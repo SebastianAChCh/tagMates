@@ -17,8 +17,9 @@ import Contacts from './routes/Contacts.routes';
 import { checkResponseType, RequestsType } from './types/Requests';
 import { Requests } from './services/Requests.service';
 import { Positions } from './services/Positions.service';
-import TaggyRt from './routes/Taggy.routes'
-import UsersInfo from './routes/UserInformation.routes'
+import TaggyRt from './routes/Taggy.routes';
+import UsersInfo from './routes/UserInformation.routes';
+import HealthInfo from './routes/Health.routes';
 import { Taggy } from './services/Taggy.service';
 
 const app = express();
@@ -47,6 +48,7 @@ app.use(Contacts);
 app.use(Messages);
 app.use(UsersInfo);
 app.use(TaggyRt);//TaggyRt is TaggyRoute
+app.use(HealthInfo);
 
 //Users online in the chat
 let Users: usersSocket[] = [];

@@ -1,5 +1,6 @@
 import { dbFirestore as db } from '../configurations/firebaseAdmin';
 import { ContactsType } from '../types/Contacts';
+import { MessagesSocket } from './Messages.service';
 
 export class Contacts {
     public async getContact(email: string, contact: string) {
@@ -19,14 +20,22 @@ export class Contacts {
     }
 
     public async loadContacts(email: string) {
+        const Messages = new MessagesSocket(email);
+        let ContactsResponse;
         try {
-            const ContactsResponse = await db.collection('Contacts').doc(email).collection('Users').get();
-
-            return ContactsResponse;
+            ContactsResponse = await db.collection('Contacts').doc(email).collection('Users').get();
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);
         }
+
+        const lastMessages = ContactsResponse.docs.map(async user => {
+            const Message = await Messages.loadLastMessage(user.data().email);
+            return Message;
+        });
+
+
+        return { ContactsResponse: ContactsResponse.docs, lastMessages: lastMessages };
     }
 
     public async saveContacts(contact: ContactsType) {

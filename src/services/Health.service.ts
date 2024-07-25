@@ -30,8 +30,9 @@ export class Health {
     public async loadInfoHealth(email: string) {
         try {
             const medicalData = await db.collection('Medical_Information').doc(email).get();
-            if (!medicalData) return 'There is no content yet';
-            return medicalData;
+            if (!medicalData.exists) return 'There is no content yet';
+
+            return medicalData.data();
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);

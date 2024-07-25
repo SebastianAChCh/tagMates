@@ -129,10 +129,9 @@ export class Users {
           userInfo.password
         );
 
-        console.log('paso por aqui');
-
         if (isPassCorrect) {
           const { password: _, ...userInformation } = userInfo;
+          console.log('paso por aqui');
 
           return {
             userInformation,

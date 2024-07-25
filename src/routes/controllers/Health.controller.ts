@@ -6,8 +6,8 @@ export const saveHealthInfo = async (req: Request, res: Response) => {
     try {
         await healthMethods.saveHealthInfo(req.body);
         return res.json({ status: 200, message: 'data created successfully' });
-    } catch (error) {
-        return res.json({ status: 500, error });
+    } catch (error: any) {
+        return res.json({ status: 500, error: error.message })
     }
 }
 
@@ -16,8 +16,8 @@ export const updateHealthInfo = async (req: Request, res: Response) => {
     try {
         await healthMethods.updateHealthInfo(req.body);
         return res.json({ status: 200, message: 'data updated successfully' });
-    } catch (error) {
-        return res.json({ status: 500, error });
+    } catch (error: any) {
+        return res.json({ status: 500, error: error.message })
     }
 }
 
@@ -26,7 +26,7 @@ export const loadHealthInfo = async (req: Request, res: Response) => {
     try {
         const healthInfo = await healthMethods.loadInfoHealth(req.body.email);
         return res.json({ status: 200, healthInfo });
-    } catch (error) {
-        return res.json({ status: 500, error })
+    } catch (error: any) {
+        return res.json({ status: 500, error: error })
     }
 }

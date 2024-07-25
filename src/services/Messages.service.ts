@@ -70,15 +70,33 @@ export class MessagesSocket {
         }
     }
 
-    public async loadMessages(user: string) {
+    public async loadLastMessage(user: string) {
         const conversationID = await this.getConversationId(user);
-        let messages: any;
+        let message;
 
         try {
-            messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('sender', '==', user).get();
+            message = await db.collection('Conversations').doc(conversationID).collection('Messages').orderBy('date', 'desc').limit(1).get();
 
-            if (!messages) {
-                messages = await db.collection('Conversations').doc(conversationID).collection('Messages').where('receiver', '==', user).get();
+            if (message.docs.length < 1) {
+                return 'Something were wrong';
+            }
+
+            return message.docs[0].data();
+        } catch (error: any) {
+            console.error(error);
+            throw new Error(error.message);
+        }
+    }
+
+    public async loadMessages(user: string) {
+        const conversationID = await this.getConversationId(user);
+        let messages;
+
+        try {
+            messages = await db.collection('Conversations').doc(conversationID).collection('Messages').get();
+
+            if (messages.docs.length < 1) {
+                return 'There are not messages yet';
             }
 
             return messages;

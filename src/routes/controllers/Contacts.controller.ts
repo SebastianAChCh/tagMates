@@ -6,20 +6,24 @@ export const loadContacts = async (req: Request, res: Response) => {
 
     try {
         const contactsLoaded = await contacts.loadContacts(req.body.email);
-        if (!contactsLoaded.docs[0]) {
-            return res.json({
-                status: 404,
-                message: 'there are not contacts yet'
-            });
-        }
 
-        const contactsResponse = contactsLoaded.docs.map(cts => cts.data().email)
+        let contactsInfo: any[] = [];
+
+        await Promise.all(
+            contactsLoaded.lastMessages.map(async (messagesValues) => {
+                const message: any = await messagesValues;
+                contactsLoaded.ContactsResponse.forEach((contactsValues) => {
+                    if (contactsValues.data().email === message.receiver || contactsValues.data().email === message.sender) {
+                        contactsInfo.push({ ...contactsValues.data(), MessageInf: message });
+                    }
+                });
+            })
+        );
 
         return res.json({
             status: 200,
-            contactsResponse
+            contactsLoaded: contactsInfo,
         });
-
     } catch (error) {
         return res.json({
             status: 200,
