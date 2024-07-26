@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.bg}>
-      {/* <MapView
+      <MapView
         style={styles.map}
         initialRegion={{
           latitude: origin.latitude,
@@ -59,7 +59,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             />
           </Marker>
         </TouchableOpacity>
-      </MapView> */}
+      </MapView>
 
       <Header navigation={navigation} title='TagMates' />
 
