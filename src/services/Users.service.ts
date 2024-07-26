@@ -111,14 +111,8 @@ export class Users {
   }
 
   public async logIn(dataSession: logIn): Promise<getDataSession> {
-    let userInfo: string | UsersModel;
-    try {
-      userInfo = await this.getUser(dataSession.email);
-      if (typeof userInfo === 'string') return userInfo; //verify if the data was sent correctly or there was an error
-    } catch (error: any) {
-      console.error(error);
-      throw new Error(error.message);
-    }
+    const userInfo: string | UsersModel = await this.getUser(dataSession.email);
+    if (typeof userInfo === 'string') return userInfo; //verify if the data was sent correctly or there was an error
 
     try {
       if (typeof userInfo !== 'string') {

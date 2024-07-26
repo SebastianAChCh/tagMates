@@ -28,12 +28,18 @@ const socketIo = new Server(nodeServer, {
   connectionStateRecovery: {
     maxDisconnectionDuration: 300000,
   },
-  maxHttpBufferSize: 5e8
+  maxHttpBufferSize: 5e8,
+  cors: {
+    origin: '*'
+  }
 });
 
 
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: '*'
+}));
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: false }));
@@ -135,7 +141,11 @@ socketIo.on('connection', (serverIo: Socket) => {
   serverIo.on('Message', (message: Message) => {
     Users.forEach(user => {
       if (user.user === message.receiver) {
-        socketIo.to(user.socketId).emit('Message', message);
+        if (message.type === 'text') {
+          socketIo.to(user.socketId).emit('MessageText', { messageInfo: message });
+        } else {
+          socketIo.to(user.socketId).emit('MessageFile', { messageInfo: message });
+        }
       }
     })
 

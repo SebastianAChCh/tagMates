@@ -13,7 +13,12 @@ export const loadContacts = async (req: Request, res: Response) => {
             contactsLoaded.lastMessages.map(async (messagesValues) => {
                 const message: any = await messagesValues;
                 contactsLoaded.ContactsResponse.forEach((contactsValues) => {
-                    if (contactsValues.data().email === message.receiver || contactsValues.data().email === message.sender) {
+
+                    if (!message) {
+                        contactsInfo.push({ ...contactsValues.data(), MessageInf: '' });
+                    } else if (message.error && message.email === contactsValues.data().email) {
+                        contactsInfo.push({ ...contactsValues.data(), MessageInf: '' });
+                    } else if (contactsValues.data().email === message.receiver || contactsValues.data().email === message.sender) {
                         contactsInfo.push({ ...contactsValues.data(), MessageInf: message });
                     }
                 });
@@ -26,7 +31,7 @@ export const loadContacts = async (req: Request, res: Response) => {
         });
     } catch (error) {
         return res.json({
-            status: 200,
+            status: 500,
             error
         });
     }

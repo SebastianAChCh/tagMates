@@ -27,10 +27,7 @@ export const loadMessages = async (req: Request, res: Response) => {
 
         const response = await messages.loadMessages(req.body.user);
 
-        return res.json({
-            status: 200,
-            response
-        });
+        return res.json({ status: 200, response });
     } catch (error) {
         return res.json({
             status: 500,

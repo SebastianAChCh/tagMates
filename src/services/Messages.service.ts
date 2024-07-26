@@ -59,6 +59,7 @@ export class MessagesSocket {
     public async getConversationId(user: string) {
         try {
             const resultMessagesID = await db.collection('ConversationID').doc(this.email).collection('Contacts').where('Username', '==', user).get();
+
             if (resultMessagesID.docs.length < 1) {
                 return null;
             }
@@ -72,16 +73,22 @@ export class MessagesSocket {
 
     public async loadLastMessage(user: string) {
         const conversationID = await this.getConversationId(user);
+
         let message;
+
+        if (conversationID === null) {
+            return { error: 'Something went wrong', email: user };
+        };
 
         try {
             message = await db.collection('Conversations').doc(conversationID).collection('Messages').orderBy('date', 'desc').limit(1).get();
 
-            if (message.docs.length < 1) {
-                return 'Something were wrong';
-            }
 
-            return message.docs[0].data();
+            if (message.docs.length > 0) {
+                return { ...message.docs[0].data(), date: message.docs[0].data().date.toDate().toLocaleString() };
+            } else {
+                return { error: 'Something went wrong', email: user };
+            }
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);
@@ -92,6 +99,9 @@ export class MessagesSocket {
         const conversationID = await this.getConversationId(user);
         let messages;
 
+        if (conversationID === null) return 'There are not messages yet';
+
+
         try {
             messages = await db.collection('Conversations').doc(conversationID).collection('Messages').get();
 
@@ -99,7 +109,15 @@ export class MessagesSocket {
                 return 'There are not messages yet';
             }
 
-            return messages;
+            const messagesUnordered = messages.docs.map(message => ({ ...message.data(), date: message.data().date.toDate().toLocaleString() }));
+            const messagesOrdered = messagesUnordered.sort((a: any, b: any) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateA.getTime() - dateB.getTime();
+            });
+
+
+            return messagesOrdered;
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);
