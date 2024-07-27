@@ -4,7 +4,7 @@ import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, Stat
 import Header from '../components/Header';
 
 
-const HealthScreen: React.FC = () => {
+const HealthScreen = ({navigation}: {navigation: any}) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -17,8 +17,9 @@ const HealthScreen: React.FC = () => {
   }
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
+      <Header title='Health' navigation={navigation}/>
       <ScrollView style={styles.scrollView}>
-      <Header title='Health' navigation={Header} />
+      
 
         <View style={styles.margin}>
           <View style={styles.box}>

@@ -49,50 +49,50 @@ export default function ProfileScreen({ router, navigation }: { router: any, nav
         !infoUser ? (
           <View><Text>Loading...</Text></View>
         ) : (
+          <>
           <ScrollView style={styles.scrollView}>
-            <Header title='Profile' navigation={navigation} />
-            <View style={styles.header}>
-              <View style={styles.shadowV}><Image source={require('../assets/friend1.png')} style={styles.avatar} /></View>
-              <Text style={styles.nameTitle}>{infoUser.fullname}</Text>
-            </View>
+          <Header title='Profile' navigation={navigation} />
 
-            <View>
-              <Text style={styles.text1}>Description</Text>
-              <View style={styles.box}>
-                <Text style={styles.text2}>{!infoUser.summary ? 'There is no summary yet' : infoUser.summary}</Text>
+              <View style={styles.header}>
+                <View style={styles.shadowV}><Image source={require('../assets/friend1.png')} style={styles.avatar} /></View>
+                <Text style={styles.nameTitle}>{infoUser.fullname}</Text>
               </View>
 
-              <Text style={styles.text1}>My Tags</Text>
-              <View style={styles.box}>
-                {
-                  !infoUser.tags ? (<>
+              <View>
+                <Text style={styles.text1}>Description</Text>
+                <View style={styles.box}>
+                  <Text style={styles.text2}>{!infoUser.summary ? 'There is no summary yet' : infoUser.summary}</Text>
+                </View>
+
+                <Text style={styles.text1}>My Tags</Text>
+                <View style={styles.box}>
+                  {!infoUser.tags ? (<>
                     <Text style={styles.text2}>There are not tags yet</Text>
                     <View style={styles.addTabButton}>
-                      <AddButton/>                      
+                      <AddButton />
                     </View>
                   </>) :
                     infoUser.tags?.map(tag => {
                       return (<>
-                      <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View>
+                        <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View>
                         <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View>
                         <View style={styles.tabButton}><Text style={styles.tabButtonText}>Fortnite</Text></View></>
-                          )
-                    })
-                }
+                      );
+                    })}
+                </View>
+
+                <Text style={styles.text1}>My Photos</Text>
+                <ScrollView horizontal={true}>
+                  <View style={styles.marginPh}>
+                    <View style={styles.box2}></View>
+                    <View style={styles.box2}></View>
+                    <View style={styles.box2}></View>
+                  </View>
+                </ScrollView>
+
               </View>
 
-              <Text style={styles.text1}>My Photos</Text>
-        <ScrollView horizontal={true}>
-              <View style={styles.marginPh}>
-                <View style={styles.box2}></View>
-                <View style={styles.box2}></View>
-                <View style={styles.box2}></View>
-              </View>
-        </ScrollView>
-
-            </View>
-
-          </ScrollView>
+            </ScrollView></>
         )
       }
     </SafeAreaView>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-
+    zIndex: 999999
   },
 
   marginPh: {

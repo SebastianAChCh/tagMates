@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, Image, Modal, Platform, StatusBar, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import Header from '../components/Header';
 
-export default function DiaryScreen() {
+export default function DiaryScreen({ navigation } : {navigation : any}) {
   const [rating, setRating] = useState(0);
   const [experience, setExperience] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
@@ -27,7 +27,7 @@ export default function DiaryScreen() {
 
   <SafeAreaView style={styles.AndroidSafeArea}>
     <View style={styles.container}>
-    <Header title='Diary' navigation={Header} />
+    <Header title='Diary' navigation={navigation} />
       
       <TouchableOpacity style={styles.selector} onPress={toggleModal}>
         <Text>{selectedMate}</Text>
@@ -64,7 +64,8 @@ export default function DiaryScreen() {
           <Text style={styles.addImageText}>+</Text>
         </View>
       </View>
-
+      
+      <Text>Califcacion</Text>
       <View style={styles.ratingContainer}>
         {[1, 2, 3, 4, 5].map((star) => (
           <TouchableOpacity key={star} onPress={() => handleRating(star)}>

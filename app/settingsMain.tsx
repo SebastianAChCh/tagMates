@@ -3,8 +3,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
 import SettingIcon from '../components/SettingIcon';
 import { useAuth } from '../providers/Authentication';
+import Header from '../components/Header';
 
-const SettingsScreen: React.FC = () => {
+const SettingsScreen = ({ navigation } : {navigation : any}) => {
   const { getProximityState, INITIAL_URL, userInfo } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -59,7 +60,7 @@ const SettingsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.headerTitle}>Settings</Text>
+      <Header title='Settings' navigation={navigation}/>
 
         <SettingIcon icon='chevron-right' route='Location' src={require('../assets/images/location.png')} />
 

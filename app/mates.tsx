@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Header from '../components/Header';
 
-const MatesScreen = () => {
+const MatesScreen = ({navigation}: {navigation: any}) => {
   const [requests, setRequests] = useState([
     { id: '1', name: 'Elia Muñoz', image: '../assets/images/diary.png', matchPercentage: '70%' },
     { id: '2', name: 'Juan Butera', image: '../assets/images/chat.png', matchPercentage: '50%' },
@@ -34,8 +34,9 @@ const MatesScreen = () => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
+      <Header title='Zaps' navigation={navigation} />
       <View style={styles.container}>
-      <Header title='Zaps' navigation={Header} />
+      
         <View style={styles.tabContainer}>
           <TouchableOpacity style={styles.tabButton}>
             <Text style={styles.tabButtonText}>Suggestions</Text>

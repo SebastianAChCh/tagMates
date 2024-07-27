@@ -1,16 +1,18 @@
 import { StyleSheet, Image, Platform, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps';
 import { useState } from 'react';
 import { useAuth } from '../providers/Authentication';
 import Menu from '../components/Menu';
 import Header from '../components/Header';
+import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const { userInfo } = useAuth();
 
   const [fontsLoaded] = useFonts({
-    Custom: require('../assets/fonts/League.ttf'),
+    LeagueSpartan_800ExtraBold,
+    LeagueSpartan_600SemiBold,
+    LeagueSpartan_400Regular,
   });
 
   const [origin, setOrigin] = useState({
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
   bg: {
     backgroundColor: '#FAF6F6',
     flex: 1,
-    fontFamily: 'Custom',
+    fontFamily: 'LeagueSpartan_400Regular',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     alignItems: 'center',
     justifyContent: 'center',
-    fontFamily: 'Custom',
+    fontFamily: 'LeagueSpartan_800ExtraBold',
     color: '#00ABA1',
     fontSize: 28,
   },

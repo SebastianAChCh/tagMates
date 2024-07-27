@@ -25,12 +25,13 @@ const TaggyScreen = ( { navigation } : {navigation : any}) => {
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
-      <Header title='Taggy' navigation={Header} />
+      <Header title='Taggy' navigation={navigation}/>
         <View style={styles.header}>
           <View style={styles.shadowV}><Image source={require('../assets/images/ron.jpeg')} style={styles.avatar}/></View>
-            <View>
-            <TouchableOpacity onPress={() => navigation.navigate('Diary')}>
-              <Image source={require('../assets/images/diary.png')} style={styles.diary} /></TouchableOpacity>
+            <View >
+              <TouchableOpacity style={styles.shadowDiV} onPress={() => navigation.navigate('Diary')}>
+                <Image source={require('../assets/images/diary.png')} style={styles.diary} />
+              </TouchableOpacity>
             </View>
         </View>
 
@@ -104,13 +105,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     backgroundColor: 'white',
-    borderRadius: 100
+    borderRadius: 90,
+  },
+
+  shadowDiV: {
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    backgroundColor: 'white',
+    borderRadius: 100,
+    zIndex: 2,
+    bottom: 40,
+    left: 52,
+    
   },
 
   diary: {
-    height: 20,
-    width: 20,
+    height: 30,
+    width: 30,
     borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'white'
+
+    
   },
   username: {
     fontWeight: 'bold',
