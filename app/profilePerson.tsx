@@ -4,60 +4,60 @@ import { useFonts } from 'expo-font';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 
 export default function ProfilePersonScreen({ navigation }) {
-    const [fontsLoaded] = useFonts({
-      LeagueSpartan_800ExtraBold,
-    });
+  const [fontsLoaded] = useFonts({
+    LeagueSpartan_800ExtraBold,
+  });
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <ScrollView style={styles.scrollView}>
-      <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={styles.headerTitle}>Profile</Text>
         <View style={styles.header}>
           <Image source={require('../assets/friend1.png')} style={styles.avatar} />
           <Text style={styles.nameTitle}>Juan Butera</Text>
         </View>
 
         <View>
-        <Text style={styles.text1}>Description</Text>
-                <View style={styles.box}>
-                    <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
-                    
-                </View>
+          <Text style={styles.text1}>Description</Text>
+          <View style={styles.box}>
+            <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
 
-        <Text style={styles.text1}>My Tags</Text>
-                <View style={styles.box}>
-                    <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
-                    
-                </View>
-                
-        <Text style={styles.text1}>My Photos</Text>
-        <View style={styles.marginPh}>
-                <View style={styles.box2}></View>
-                <View style={styles.box2}></View>
-                <View style={styles.box2}></View>
+          </View>
+
+          <Text style={styles.text1}>My Tags</Text>
+          <View style={styles.box}>
+            <Text style={styles.text2}>Tengo 18 años y me gusta molestar a Hector porque soy un naco y un estupido >:)</Text>
+
+          </View>
+
+          <Text style={styles.text1}>My Photos</Text>
+          <View style={styles.marginPh}>
+            <View style={styles.box2}></View>
+            <View style={styles.box2}></View>
+            <View style={styles.box2}></View>
+          </View>
+
         </View>
 
-        </View>
 
-        
 
-        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    AndroidSafeArea: {
-        flex: 1,
-        backgroundColor: "white",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-      },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
   flexOne: {
     flex: 1
   },
 
   headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
@@ -66,8 +66,8 @@ const styles = StyleSheet.create({
   },
 
   text1: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 20, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: 'black',
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
   },
 
   text2: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 15, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 15,
     marginBottom: 5,
     marginTop: 5,
     color: 'black',
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    
+
   },
 
   marginPh: {
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
 
 
   nameTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     color: 'black',
   },

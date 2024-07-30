@@ -20,6 +20,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         if (response && Platform.OS === 'web' && setLoginSuccess) {
           setLoginSuccess(true);
         } else if (response) {
+          console.log('All ok');
+
           await reloadAsync();
         }
       } catch (error) {

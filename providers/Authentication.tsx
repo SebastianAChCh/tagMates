@@ -110,6 +110,8 @@ const AuthProvider = ({ children }: PropsProvider) => {
 
     const logIn = async (data: LogInType): Promise<any> => {
         try {
+            console.log('entro');
+
             const response = await fetch(`${INITIAL_URL}/logIn`, {
                 method: 'POST',
                 headers: {

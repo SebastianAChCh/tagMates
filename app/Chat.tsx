@@ -1,50 +1,84 @@
 import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
-import React from 'react';
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import React, { useEffect, useState } from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useAuth } from '../providers/Authentication';
+import { Contact } from '../types/Contacts';
 
-type ChatItemProps = {
-    item: {
-        imageUrl: any,  // Usamos 'any' porque la fuente es variable y local
-        name: string,
-        message: string,
-        time: string,
-    };
-};
-
-const ChatScreen = () => {
+const ChatScreen = ({ navigation }: { navigation: any }) => {
+  const { INITIAL_URL, userInfo } = useAuth();
+  const [contacts, setContacts] = useState<Contact[]>();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
     LeagueSpartan_600SemiBold,
     LeagueSpartan_400Regular,
   });
 
+  const loadContacts = async () => {
+    try {
+      const response = await fetch(`${INITIAL_URL}/loadContacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userInfo?.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (typeof data.response !== 'string') {
+        setContacts(data.contactsLoaded);
+      }
+
+
+    } catch (error) {
+      console.error(error instanceof Error && error.message);
+    }
+  }
+
+  useEffect(() => {
+    loadContacts()
+  }, []);
+
+
   if (!fontsLoaded) {
     return <View style={styles.loadingContainer}><Text>Cargando...</Text></View>;
   }
 
-  const chats = [
-    { id: '1', name: 'Elia Muñoz', message: 'Usted está reprobado', time: '2:57 p.m.', imageUrl: require('../assets/friend1.png') },
-    { id: '2', name: 'Dafnis Villagrán', message: 'Esto está muy candente chavo', time: '1:37 p.m.', imageUrl: require('../assets/friend2.png') },
-    { id: '3', name: 'Nuvia González', message: 'Envía un mensaje a tu nuevo mate', time: '2:57 p.m.', imageUrl: require('../assets/friend1.png') },
-  ];
+  function generateUUID(digits = 10) {
+    let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
+    let uuid = [];
+    for (let i = 0; i < digits; i++) {
+      uuid.push(str[Math.floor(Math.random() * str.length)]);
+    }
+    return uuid.join('');
+  }
 
-  const renderItem = ({ item }: ChatItemProps) => (
-    <TouchableOpacity
-      style={styles.chatItem}
-      activeOpacity={0.6}
-      onPress={() => console.log('Chat presionado')}
-    >
-      <Image source={item.imageUrl} style={styles.image} />
-      <View style={styles.chatInfo}>
-        <View style={styles.chatNameAndTime}>
-          <Text style={[styles.chatName, { fontFamily: 'LeagueSpartan_600SemiBold' }]}>{item.name}</Text>
-          <Text style={[styles.chatTime, { fontFamily: 'LeagueSpartan_400Regular' }]}>{item.time}</Text>
+  const renderItem = ({ email, name, MessageInf }: Contact) => {
+
+    return (
+      <TouchableOpacity
+        style={styles.chatItem}
+        key={generateUUID(10)}
+        activeOpacity={0.6}
+        onPress={() => navigation.navigate('ChatWithPerson', {
+          email,
+          name
+        })}
+      >
+        <Image source={require('../assets/friend1.png')} style={styles.image} />
+        <View style={styles.chatInfo}>
+          <View style={styles.chatNameAndTime}>
+            <Text style={[styles.chatName, { fontFamily: 'LeagueSpartan_600SemiBold' }]}>{name ? name : ''}</Text>
+            <Text style={[styles.chatTime, { fontFamily: 'LeagueSpartan_400Regular' }]}>{MessageInf?.date ? MessageInf?.date : ''}</Text>
+          </View>
+          <Text style={[styles.chatMessage, { fontFamily: 'LeagueSpartan_400Regular' }]}>{MessageInf?.message ? MessageInf.message : ''}</Text>
         </View>
-        <Text style={[styles.chatMessage, { fontFamily: 'LeagueSpartan_400Regular' }]}>{item.message}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
@@ -52,12 +86,11 @@ const ChatScreen = () => {
         <Text style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Chats</Text>
         <Icon name="user-friends" size={24} color="#000" />
       </View>
-      <FlatList
-        data={chats}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContentContainer}
-      />
+      <ScrollView>
+        {
+          contacts ? contacts.map(renderItem) : (<Text>Loading...</Text>)
+        }
+      </ScrollView>
     </SafeAreaView>
   );
 };

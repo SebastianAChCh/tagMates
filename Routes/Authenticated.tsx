@@ -8,6 +8,7 @@ import ProfileScreen from '../app/profile';
 import ProfilePersonScreen from '../app/profilePerson';
 import DiaryScreen from '../app/diary';
 import MatesScreen from '../app/mates';
+import ChatWithPerson from '../app/chatwithperson'
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const Authenticated = () => {
 
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Chat" component={Chat} />
+            <Stack.Screen name="ChatWithPerson" component={ChatWithPerson} />
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Health" component={HealthScreen} />
             <Stack.Screen name="Taggie" component={TaggyScreen} />
