@@ -5,20 +5,28 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '../providers/Authentication';
 import { Message } from '../types/Messages';
+import Camera from '../components/Camera';
+import MessageComponent from '../components/Message';
+import ImagePicker from '../components/ImagePicker';
+import DocumentPicker from '../components/DocumentPicker';
+import ModalComponent from '../components/Modal';
 
 const ChatScreen = ({ route }: any) => {
 
-  const [message, setMessage] = useState<string>('');
-  const [files, setFiles] = useState<any>();
+  const [message, setMessage] = useState<Message | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [hiddenImgPick, setHiddenImgPick] = useState<boolean>(false);
+  const [hiddenCam, setHiddenCam] = useState<boolean>(false);
+  const [hiddenFiles, setHiddenFiles] = useState<boolean>(false);
+  const [files, setFiles] = useState<boolean>(false);
   const [showActions, setShowActions] = useState<boolean>(false);
   const [socket, setSocket] = useState<Socket<any>>();
   const chatRef = useRef<TextInput | null>(null);
 
-  const { INITIAL_URL, userInfo } = useAuth();
+  const { INITIAL_URL, userInfo, generateUUID } = useAuth();
   const { email, name } = route.params;
 
-  const loadOldMessages = async () => {
+  const loadOldMessages = async (): Promise<void> => {
     try {
       const response = await fetch(`${INITIAL_URL}/loadMessages`, {
         method: 'POST',
@@ -62,11 +70,13 @@ const ChatScreen = ({ route }: any) => {
       });
 
       socket.on('MessageFile', (messageInfo: any) => {
+        if (messageInfo.messageInfo.receiver !== userInfo?.email) return;
+        setMessages(prevItems => [...prevItems, messageInfo.messageInfo]);
       });
     }
   }, [socket]);
 
-  const saveMessage = async (messageInfo: Message, typeUrl: string) => {
+  const saveMessage = async (messageInfo: Message, typeUrl: string): Promise<void> => {
     await fetch(`${INITIAL_URL}/${typeUrl}`, {
       method: 'POST',
       headers: {
@@ -74,42 +84,47 @@ const ChatScreen = ({ route }: any) => {
       },
       body: JSON.stringify({ email: userInfo?.email, Message: messageInfo })
     });
-  }
+  };
 
-  const handleSend = () => {
-    if (socket && message?.trim()) {
-      socket.emit('Message', { message, type: 'text', sender: userInfo?.email, receiver: email });
-      setMessages(prevItems => [...prevItems, { message, type: 'text', sender: userInfo!.email, receiver: email }]);
-      saveMessage({ message, type: 'text', sender: userInfo!.email, receiver: email }, 'saveTextMessage');
-      setMessage('')
+  const handleSend = (): void => {
+    if (socket && message?.message.trim()) {
+      socket.emit('Message', { message: message.message, type: 'text', sender: userInfo?.email, receiver: email });
+      setMessages(prevItems => [...prevItems, { message: message.message, type: message.type, sender: userInfo!.email, receiver: email }]);
+      saveMessage({ message: message.message, type: message.type, sender: userInfo!.email, receiver: email }, 'saveTextMessage');
+      setMessage({ message: '', sender: '', receiver: '', type: '' });
       chatRef.current?.focus();
     }
 
-    if (socket && files) {
-      socket.emit('Message', { message: files, type: 'file', sender: userInfo?.email, receiver: email });
-    }
   };
 
-  function generateUUID(digits = 10) {
-    let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
-    let uuid = [];
-    for (let i = 0; i < digits; i++) {
-      uuid.push(str[Math.floor(Math.random() * str.length)]);
+  useEffect(() => {
+    if (files && socket && message?.message) {
+      setMessages(prevItems => [...prevItems, { message: message.message, type: message.type, sender: userInfo!.email, receiver: email }]);
+      socket.emit('Message', { message: message.message, type: message.type, sender: userInfo?.email, receiver: email });
+      setMessage({ message: '', sender: '', receiver: '', type: '' });
+      setFiles(false);
+      chatRef.current?.focus();
     }
-    return uuid.join('');
-  }
+  }, [files, message]);
 
 
   return (
     <SafeAreaView style={styles.container}>
+
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
+
         <View style={styles.header}>
+
           <TouchableOpacity>
             <FontAwesome5 name="chevron-left" size={20} color="#000" />
           </TouchableOpacity>
+
           <Image source={require('../assets/friend1.png')} style={styles.avatar} />
+
           <Text style={styles.username}>{name}</Text>
+
           <Text style={styles.status}>Online</Text>
+
           <TouchableOpacity style={styles.icon}>
             <FontAwesome5 name="user-friends" size={24} color="#000" />
           </TouchableOpacity>
@@ -117,8 +132,8 @@ const ChatScreen = ({ route }: any) => {
 
         <FlatList
           data={messages}
-          key={generateUUID(10)}
-          renderItem={({ item }) => (<View style={styles.messageBox}><Text style={styles.messageText}>{item.message}</Text></View>)}
+          key={generateUUID && generateUUID(10)}
+          renderItem={({ item }) => <MessageComponent item={item} INITIAL_URL={INITIAL_URL ? INITIAL_URL : ''} />}
           style={styles.messageArea}
         />
 
@@ -130,12 +145,17 @@ const ChatScreen = ({ route }: any) => {
 
           <TextInput
             style={styles.input}
-            value={message}
-            onChangeText={setMessage}
+            value={message?.message}
+            onChangeText={(e) => setMessage({
+              message: e,
+              receiver: '',
+              sender: '',
+              type: 'text'
+            })}
             placeholder="Escribe un mensaje..."
             ref={chatRef}
           />
-          <TouchableOpacity onPress={handleSend}>
+          <TouchableOpacity onPress={() => handleSend()}>
             <FontAwesome name="send" size={24} color="#000" />
           </TouchableOpacity>
         </View>
@@ -151,23 +171,37 @@ const ChatScreen = ({ route }: any) => {
         <TouchableOpacity style={styles.modalBackdrop} onPress={() => setShowActions(false)}>
           <View style={styles.actionsContainer}>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenImgPick(true)}>
               <FontAwesome name="file-photo-o" size={24} color="#000" />
               <Text>Fotos</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenCam(true)}>
               <FontAwesome5 name="camera" size={24} color="#000" />
               <Text>Cámara</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenFiles(true)}>
               <FontAwesome5 name="file" size={24} color="#000" />
               <Text>Documento</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
+
+      <ModalComponent hiddenState={hiddenCam} setHidden={setHiddenCam}>
+        <Camera email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+      </ModalComponent>
+
+      <ModalComponent hiddenState={hiddenImgPick} setHidden={setHiddenImgPick}>
+        <ImagePicker email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+      </ModalComponent>
+
+      <ModalComponent hiddenState={hiddenFiles} setHidden={setHiddenFiles}>
+        <DocumentPicker email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+      </ModalComponent>
+
+
     </SafeAreaView>
   );
 };

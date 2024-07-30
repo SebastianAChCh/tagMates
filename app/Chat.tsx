@@ -6,7 +6,7 @@ import { useAuth } from '../providers/Authentication';
 import { Contact } from '../types/Contacts';
 
 const ChatScreen = ({ navigation }: { navigation: any }) => {
-  const { INITIAL_URL, userInfo } = useAuth();
+  const { INITIAL_URL, userInfo, generateUUID } = useAuth();
   const [contacts, setContacts] = useState<Contact[]>();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
@@ -47,21 +47,12 @@ const ChatScreen = ({ navigation }: { navigation: any }) => {
     return <View style={styles.loadingContainer}><Text>Cargando...</Text></View>;
   }
 
-  function generateUUID(digits = 10) {
-    let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
-    let uuid = [];
-    for (let i = 0; i < digits; i++) {
-      uuid.push(str[Math.floor(Math.random() * str.length)]);
-    }
-    return uuid.join('');
-  }
-
   const renderItem = ({ email, name, MessageInf }: Contact) => {
 
     return (
       <TouchableOpacity
         style={styles.chatItem}
-        key={generateUUID(10)}
+        key={generateUUID && generateUUID(10)}
         activeOpacity={0.6}
         onPress={() => navigation.navigate('ChatWithPerson', {
           email,
