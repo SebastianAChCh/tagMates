@@ -83,7 +83,6 @@ export class MessagesSocket {
         try {
             message = await db.collection('Conversations').doc(conversationID).collection('Messages').orderBy('date', 'desc').limit(1).get();
 
-
             if (message.docs.length > 0) {
                 return { ...message.docs[0].data(), date: message.docs[0].data().date.toDate().toLocaleString() };
             } else {

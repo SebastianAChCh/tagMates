@@ -1,5 +1,6 @@
+import OpenAI from 'openai';
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { NewCoordinates, CalculateDistance, Coordinates, updateProximityState } from '../types/Positions';
+import { NewCoordinates, CalculateDistance, Coordinates, updateProximityState, tagsAnalyze } from '../types/Positions';
 import { UsersModel } from '../types/Users';
 import { Users } from './Users.service';
 
@@ -71,6 +72,28 @@ export class Positions {
 
     private degreesToRadians(degrees: number): number {
         return degrees * (Math.PI / 180);
+    }
+
+    public async analyzeTags(usersTags: tagsAnalyze) {
+        const openai = new OpenAI();
+
+        try {
+            const stream = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "system", content: 'You are a helpful assistant that analyze if the tags' }, { role: "user", content: Message.message }],
+                stream: true,
+                response_format: { type: 'json_object' }
+            });
+
+            if (stream.choices[0].message.content) {
+            }
+
+            return true;
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
+
+        return false;
     }
 
     public calculateDistance(coordinates: CalculateDistance): boolean {

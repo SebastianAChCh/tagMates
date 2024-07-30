@@ -15,6 +15,7 @@ export const updateCurrentPosition = async (req: Request, res: Response) => {
     }
 }
 
+//Change the state of vibration by proximity, i.e, if the bracelet should vibrate or not when another user is near to the current one 
 export const changeProximityState = (req: Request, res: Response) => {
     const proximityState = new Positions();
     try {
@@ -27,6 +28,8 @@ export const changeProximityState = (req: Request, res: Response) => {
     }
 }
 
+
+//get the state of vibration by proximity, i.e, if the bracelet should vibrate or not when another user is near to the current one 
 export const getProximityState = async (req: Request, res: Response) => {
     const { email } = req.body;
     const proximityState = new Positions();

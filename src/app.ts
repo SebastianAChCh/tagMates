@@ -21,6 +21,7 @@ import TaggyRt from './routes/Taggy.routes';
 import UsersInfo from './routes/UserInformation.routes';
 import HealthInfo from './routes/Health.routes';
 import { Taggy } from './services/Taggy.service';
+import { join, resolve } from 'node:path';
 
 const app = express();
 const nodeServer = createServer(app);
@@ -40,10 +41,13 @@ app.use(cors({
   origin: '*',
   methods: '*'
 }));
-app.use(express.json());
+const path = resolve(__dirname, '../');
+
+app.use(express.static(join(path, 'uploads')));
+
+app.use(express.json({ limit: '1024mb' }));
 app.use(express.text());
 app.use(express.urlencoded({ extended: false }));
-app.use(busboy());
 app.use(cookieParser());
 
 //routes

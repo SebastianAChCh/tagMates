@@ -20,3 +20,8 @@ export type updateProximityState = {
     email: string
     state: boolean
 };
+
+export type tagsAnalyze = {
+    userTags1: string[],
+    userTags2: string[]
+};

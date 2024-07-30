@@ -1,8 +1,7 @@
-import fs from 'fs'
 import { Request, Response } from 'express';
 import { MessagesSocket } from '../../services/Messages.service';
-import { join, resolve } from 'path';
-import { foldersMessagesFiles } from '../../types/Messages'
+import { uploadFiles } from '../../configurations/uploads';
+import multer from 'multer';
 
 export const saveTextMessages = async (req: Request, res: Response) => {
     const messages = new MessagesSocket(req.body.email);
@@ -28,47 +27,45 @@ export const loadMessages = async (req: Request, res: Response) => {
         const response = await messages.loadMessages(req.body.user);
 
         return res.json({ status: 200, response });
-    } catch (error) {
+    } catch (error: any) {
         return res.json({
             status: 500,
-            error
+            error: error.message
         });
     }
 }
 
-let responseSent: boolean = false;
+export const loadLastMessage = async (req: Request, res: Response) => {
+    const MessagesMethods = new MessagesSocket(req.body.email);
+    try {
+        const response = await MessagesMethods.loadLastMessage(req.body.user)
+
+        if (response.error) return res.json({ status: 500, error: response.error });
+
+        return res.json({ status: 200, message: response })
+
+    } catch (error: any) {
+        return res.json({ status: 500, error: error.message })
+    }
+}
 
 export const saveFileMessages = async (req: Request, res: Response) => {
-    req.pipe(req.busboy);
-    const body = {} as foldersMessagesFiles;
-    const pathSrc = resolve(__dirname, '../../');
 
-    req.busboy.on('field', (fieldname, val) => body[fieldname] = val);//Save the data of the body in a object called "body"
-
-    req.busboy.on('file', (_, file, filename) => {
-        if (!fs.existsSync(join(pathSrc, 'uploads', `${body['email']}`))) {//check if the folder exist
-            fs.mkdirSync(join(pathSrc, 'uploads', `${body['email']}`));//if does not exist, then create it            
+    uploadFiles(req, res, async (err) => {
+        if (err instanceof multer.MulterError) {
+            return res.status(500).json({ error: 'Multer error: ' + err.message });
+        } else if (err) {
+            return res.status(500).json({ error: 'Unknown error: ' + err.message });
         }
 
-        if (!fs.existsSync(join(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`))) {//check if the folder exist
-            fs.mkdirSync(join(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`));//if does not exist, then create it
+        const file = req.file;
+        console.log(req.file);
+
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const dirPath = join(pathSrc, 'uploads', `${body['email']}`, `${body['type']}`, String(filename.filename));
 
-        const createFile = fs.createWriteStream(dirPath);
-        file.pipe(createFile);
-
-        createFile.on('close', () => {
-            responseSent = true;
-            return res.json({ status: 200, message: 'File saved successfully' });
-        });
-
-        createFile.on('error', (err) => {
-            console.error('There was an error saving the file', err);
-            if (!responseSent) {
-                return res.json({ status: 200, message: 'There was an error saving the file' });
-            }
-        });
+        return res.status(200).json({ status: 'ok', file: file.path });
     });
 };
