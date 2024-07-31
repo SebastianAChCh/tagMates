@@ -12,12 +12,14 @@ const Header = ({ navigation, title }: { navigation: any, title: string }) => {
                 >
                     {title}
                 </Text>
-
+                
+                <TouchableOpacity onPress={() => navigation.navigate('Zaps')}>
                 <Image
                     source={require('../assets/images/people.png')}
                     style={[styles.image, styles.margin]}
                     resizeMode="stretch"
                 />
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
                     <Image

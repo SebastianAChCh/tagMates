@@ -69,6 +69,7 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
         <SettingIcon icon='chevron-right' route='Blocks' src={require('../assets/images/block.png')} />
 
         <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/heart.png')} />
+        
 
         <View style={styles.switchContainer}>
           <Image source={require('../assets/images/proximity.png')}
@@ -80,7 +81,15 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
+
+     
         </View>
+
+        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/deleteAcc.png')} />
+
+        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/cerrarSes.png')} />
+
+        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/terms.png')} />
       </ScrollView>
     </SafeAreaView>
   );

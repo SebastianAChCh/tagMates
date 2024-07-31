@@ -1,5 +1,5 @@
-import { StyleSheet, Image, Platform, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, StyleSheet, Image, Platform, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useState } from 'react';
 import { useAuth } from '../providers/Authentication';
 import Menu from '../components/Menu';
@@ -24,17 +24,23 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     latitude: 28.662005864992164,
     longitude: -106.03918117853922,
   });
-
   return (
+
     <SafeAreaView style={styles.bg}>
+     
+     {Platform.OS !== "web" ? (
       <MapView
         style={styles.map}
+        
         initialRegion={{
           latitude: origin.latitude,
           longitude: origin.longitude,
           latitudeDelta: 0.09,
           longitudeDelta: 0.04,
-        }}
+        }
+        }
+
+      
       >
         <Marker coordinate={origin} />
 
@@ -62,7 +68,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           </Marker>
         </TouchableOpacity>
       </MapView>
-
+      ) : <></>}
       <Header navigation={navigation} title='TagMates' />
 
       <Menu navigation={navigation} />

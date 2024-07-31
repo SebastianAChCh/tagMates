@@ -123,7 +123,7 @@ export default function SignUp({ navigation }: { navigation: any }) {
         </TouchableOpacity>
         <View style={styles.footer}>
           <Text style={[styles.forgotPasswordText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
             <Text style={[styles.registerText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Log In</Text>
           </TouchableOpacity>
         </View>

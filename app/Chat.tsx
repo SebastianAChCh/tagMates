@@ -75,7 +75,13 @@ const ChatScreen = ({ navigation }: { navigation: any }) => {
     <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.header}>
         <Text style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Chats</Text>
-        <Icon name="user-friends" size={24} color="#000" />
+        <Image source={require('../assets/images/people.png')} style={{
+          height: 24,
+          width: 30, 
+          bottom: 4
+
+
+        }} />
       </View>
       <ScrollView>
         {

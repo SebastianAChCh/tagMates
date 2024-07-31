@@ -1,5 +1,12 @@
 import { View, Image, StyleSheet } from 'react-native';
 import RoutesIcons from './RoutesIcons';
+import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+
+const [fontsLoaded] = useFonts({
+    LeagueSpartan_800ExtraBold,
+    LeagueSpartan_600SemiBold,
+    LeagueSpartan_400Regular,
+  });
 
 const Menu = ({ navigation }: { navigation: any }) => {
     return (
@@ -51,7 +58,7 @@ const styles = StyleSheet.create({
 
     textMin: {
         fontSize: 10,
-        fontFamily: 'Custom',
+        fontFamily: 'LeagueSpartan_400Regular',
         color: 'black',
     },
 });
