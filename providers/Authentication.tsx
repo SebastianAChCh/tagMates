@@ -13,7 +13,6 @@ type propsContext = {
     setLoginSuccess?: Dispatch<React.SetStateAction<boolean>>
     getProximityState?: () => Promise<boolean | string>
     INITIAL_URL?: string
-    generateUUID?: (digits: number) => string
 };
 
 type PropsProvider = {
@@ -111,6 +110,7 @@ const AuthProvider = ({ children }: PropsProvider) => {
 
     const logIn = async (data: LogInType): Promise<any> => {
         try {
+            console.log('entro');
 
             const response = await fetch(`${INITIAL_URL}/logIn`, {
                 method: 'POST',
@@ -132,7 +132,6 @@ const AuthProvider = ({ children }: PropsProvider) => {
                 storageToken(dataSession.refresh_token);
                 return true;
             }
-
         } catch (error) {
             if (error instanceof Error) {
                 console.error(error.message);
@@ -182,7 +181,6 @@ const AuthProvider = ({ children }: PropsProvider) => {
         }
     };
 
-    //get the state of vibration by proximity, i.e, if the bracelet should vibrate or not when another user is near to the current one 
     const getProximityState = async (): Promise<boolean | string> => {
         try {
             const response = await fetch(`${INITIAL_URL}/getProximityState`, {
@@ -209,19 +207,8 @@ const AuthProvider = ({ children }: PropsProvider) => {
         return false;
     }
 
-    const generateUUID = (digits = 10): string => {
-        let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
-        let uuid = [];
-        for (let i = 0; i < digits; i++) {
-            uuid.push(str[Math.floor(Math.random() * str.length)]);
-        }
-
-        return uuid.join('');
-    };
-
-
     return (
-        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo, loginSuccess, setLoginSuccess, getProximityState, INITIAL_URL, generateUUID }}>
+        <Auth.Provider value={{ publicToken, logIn, signUp, userInfo, loginSuccess, setLoginSuccess, getProximityState, INITIAL_URL }}>
             {children}
         </Auth.Provider>
     );

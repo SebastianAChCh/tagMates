@@ -5,10 +5,6 @@ export type Message = {
     type: string,
 };
 
-export type FileMessage = {
-    status: string,
-    file: string
-}
 
 //It makes reference to the section where I get through the body the email and type of the file, so that I can Identify the folder where I should save the file
 export type foldersMessagesFiles = {
