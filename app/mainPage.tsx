@@ -1,10 +1,24 @@
-import { View, Text, StyleSheet, Image, Platform, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState } from 'react';
 import { useAuth } from '../providers/Authentication';
 import Menu from '../components/Menu';
 import Header from '../components/Header';
-import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+import {
+  LeagueSpartan_400Regular,
+  LeagueSpartan_600SemiBold,
+  LeagueSpartan_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/league-spartan';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const { userInfo } = useAuth();
@@ -25,51 +39,23 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     longitude: -106.03918117853922,
   });
   return (
-
     <SafeAreaView style={styles.bg}>
-     
-     {Platform.OS !== "web" ? (
-      <MapView
-        style={styles.map}
-        
-        initialRegion={{
-          latitude: origin.latitude,
-          longitude: origin.longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.04,
-        }
-        }
-
-      
-      >
-        <Marker coordinate={origin} />
-
-        <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}>
-          <Marker
-            coordinate={{ latitude: 28.635, longitude: -106.072 }}
-            title="Amigo 1"
-          >
-            <Image
-              source={require('../assets/friend1.png')}
-              style={styles.markerIcon}
-            />
-          </Marker>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('profilePerson')}>
-          <Marker
-            coordinate={{ latitude: 28.632, longitude: -106.065 }}
-            title="Amigo 2"
-          >
-            <Image
-              source={require('../assets/friend2.png')}
-              style={styles.markerIcon}
-            />
-          </Marker>
-        </TouchableOpacity>
-      </MapView>
-      ) : <></>}
-      <Header navigation={navigation} title='TagMates' />
+      {Platform.OS !== 'web' ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: origin.latitude,
+            longitude: origin.longitude,
+            latitudeDelta: 0.09,
+            longitudeDelta: 0.04,
+          }}
+        >
+          <Marker coordinate={origin} />
+        </MapView>
+      ) : (
+        <></>
+      )}
+      <Header navigation={navigation} title="TagMates" />
 
       <Menu navigation={navigation} />
     </SafeAreaView>

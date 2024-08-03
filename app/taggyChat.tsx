@@ -1,5 +1,18 @@
 import { useState } from 'react';
-import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as React from 'react';
 import Header from '../components/Header';
@@ -9,7 +22,7 @@ interface Message {
   text: string;
 }
 
-const TaggyScreen = ( { navigation } : {navigation : any}) => {
+const TaggyScreen = ({ navigation }: { navigation: any }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
@@ -24,27 +37,43 @@ const TaggyScreen = ( { navigation } : {navigation : any}) => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
-      <Header title='Taggy' navigation={navigation}/>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.flexOne}
+      >
+        <Header title="Taggy" navigation={navigation} />
         <View style={styles.header}>
-          <View style={styles.shadowV}><Image source={require('../assets/images/ron.jpeg')} style={styles.avatar}/></View>
-            <View >
-              <TouchableOpacity style={styles.shadowDiV} onPress={() => navigation.navigate('Diary')}>
-                <Image source={require('../assets/images/diary.png')} style={styles.diary} />
-              </TouchableOpacity>
-            </View>
+          <View style={styles.shadowV}>
+            <Image
+              source={require('../assets/images/ron.jpeg')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <TouchableOpacity
+              style={styles.shadowDiV}
+              onPress={() => navigation.navigate('Diary')}
+            >
+              <Image
+                source={require('../assets/images/diary.png')}
+                style={styles.diary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <FlatList
           data={messages}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => <View style={styles.messageBox}><Text style={styles.messageText}>{item.text}</Text></View>}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.messageBox}>
+              <Text style={styles.messageText}>{item.text}</Text>
+            </View>
+          )}
           style={styles.messageArea}
         />
 
         <View style={styles.inputContainer}>
-        
-            
           <TextInput
             style={styles.input}
             value={message}
@@ -56,30 +85,28 @@ const TaggyScreen = ( { navigation } : {navigation : any}) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-
-
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    AndroidSafeArea: {
-        flex: 1,
-        backgroundColor: "white",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-      },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
   flexOne: {
-    flex: 1
+    flex: 1,
   },
 
   headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold', 
-    fontSize: 35, 
+    fontFamily: 'LeagueSpartan_800ExtraBold',
+    fontSize: 35,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
     color: '#00A19D',
-    marginLeft: 20
+    marginLeft: 20,
   },
   header: {
     flexDirection: 'column',
@@ -119,7 +146,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     bottom: 40,
     left: 52,
-    
   },
 
   diary: {
@@ -127,9 +153,7 @@ const styles = StyleSheet.create({
     width: 30,
     borderRadius: 100,
     borderWidth: 2,
-    borderColor: 'white'
-
-    
+    borderColor: 'white',
   },
   username: {
     fontWeight: 'bold',
@@ -183,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 60,
-  }
+  },
 });
 
 export default TaggyScreen;
