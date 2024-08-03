@@ -14,7 +14,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   });
 
   const handleLogin = async (): Promise<void> => {
-     if (logIn && session!.email && session!.password) {
+    if (logIn && session!.email && session!.password) {
       try {
         const response = await logIn({ email: session!.email, password: session!.password });
         if (response && Platform.OS === 'web' && setLoginSuccess) {
@@ -67,7 +67,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => handleLogin()}
         >
           <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Iniciar sesión</Text>
         </TouchableOpacity>
