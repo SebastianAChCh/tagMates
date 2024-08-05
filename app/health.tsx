@@ -1,65 +1,81 @@
-import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
-import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
+import {
+  LeagueSpartan_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/league-spartan';
+import React, { useEffect, useState } from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  StatusBar,
+  ActivityIndicator,
+} from 'react-native';
 import Header from '../components/Header';
 
-
-const HealthScreen = ({navigation}: {navigation: any}) => {
+const HealthScreen = ({ navigation }: { navigation: any }) => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
   });
 
+  useEffect(() => {
+    (async () => {})();
+  }, []);
+
   if (!fontsLoaded) {
-    return <Text>Cargando...</Text>;
+    return <ActivityIndicator size={'large'} color={'#00A19D'} />;
   }
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <Header title='Health' navigation={navigation}/>
+      <Header title="Health" navigation={navigation} />
       <ScrollView style={styles.scrollView}>
-      
-
         <View style={styles.margin}>
           <View style={styles.box}>
             <Image
               source={require('../assets/images/healthR.png')}
-              style={styles.image} />
+              style={styles.image}
+            />
           </View>
           <View style={styles.margin2}>
             <View style={styles.box2}>
               <Image
                 source={require('../assets/images/Termometer.png')}
-                style={styles.image2} />
+                style={styles.image2}
+              />
               <Image
                 source={require('../assets/images/bars.png')}
-                style={styles.image3} />
+                style={styles.image3}
+              />
             </View>
 
             <View style={styles.box2}>
               <Image
                 source={require('../assets/images/oxygen.png')}
-                style={styles.image2} />
+                style={styles.image2}
+              />
               <Image
                 source={require('../assets/images/bars.png')}
-                style={styles.image3} />
+                style={styles.image3}
+              />
             </View>
-
           </View>
-
         </View>
         <Text style={styles.headerTitle}>Resume</Text>
 
         <Text style={styles.text}>Tus Signos Vitales....</Text>
-
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-
   scrollView: {
     marginHorizontal: 20,
   },
@@ -78,20 +94,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
-    color: '#00A19D'
+    color: '#00A19D',
   },
 
   text: {
     fontFamily: 'LeagueSpartan_800ExtraBold',
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'grey'
+    color: 'grey',
   },
 
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
   box: {
@@ -100,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     borderColor: '#00A19D',
-    borderWidth: 2
+    borderWidth: 2,
   },
 
   box2: {
@@ -119,7 +135,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     marginBottom: 50,
-    marginLeft: 10
+    marginLeft: 10,
   },
 
   image2: {
@@ -128,7 +144,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     marginBottom: 22,
-    marginLeft: 15
+    marginLeft: 15,
   },
 
   image3: {
@@ -137,7 +153,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     marginBottom: 22,
-    marginLeft: 55
+    marginLeft: 55,
   },
 });
 

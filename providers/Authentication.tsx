@@ -80,6 +80,7 @@ const AuthProvider = ({ children }: PropsProvider) => {
         information?: { age: number | string; fullname: string; email: string };
         error?: string;
       } = await isValid.json();
+      console.log(isValidRes);
 
       if (isValidRes.status === 200 && isValidRes.information) {
         setUserInfo(isValidRes.information);
@@ -120,10 +121,10 @@ const AuthProvider = ({ children }: PropsProvider) => {
 
   const logIn = async (data: LogInType): Promise<any> => {
     try {
-      const response = await fetch(`${INITIAL_URL}/logIn`, {
+      const response = await fetch(`http://192.168.2.10:3000/logIn`, {
         method: 'POST',
         headers: {
-          'Content-type': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: data.email,

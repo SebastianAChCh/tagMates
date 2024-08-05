@@ -1,6 +1,22 @@
-import { LeagueSpartan_400Regular, LeagueSpartan_600SemiBold, LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+import {
+  LeagueSpartan_400Regular,
+  LeagueSpartan_600SemiBold,
+  LeagueSpartan_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/league-spartan';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar, ScrollView } from 'react-native';
+import {
+  Image,
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Platform,
+  StatusBar,
+  ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAuth } from '../providers/Authentication';
 import { Contact } from '../types/Contacts';
@@ -19,11 +35,11 @@ const ChatScreen = ({ navigation }: { navigation: any }) => {
       const response = await fetch(`${INITIAL_URL}/loadContacts`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: userInfo?.email
-        })
+          email: userInfo?.email,
+        }),
       });
 
       const data = await response.json();
@@ -31,56 +47,88 @@ const ChatScreen = ({ navigation }: { navigation: any }) => {
       if (typeof data.response !== 'string') {
         setContacts(data.contactsLoaded);
       }
-
-
     } catch (error) {
       console.error(error instanceof Error && error.message);
     }
-  }
+  };
 
   useEffect(() => {
-    loadContacts()
+    loadContacts();
   }, []);
 
-
   if (!fontsLoaded) {
-    return <View style={styles.loadingContainer}><Text>Cargando...</Text></View>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size={'large'} color={'#00A19D'} />
+      </View>
+    );
   }
 
   const renderItem = ({ email, name, MessageInf }: Contact) => {
-
     return (
       <TouchableOpacity
         style={styles.chatItem}
         key={generateUUID && generateUUID(10)}
         activeOpacity={0.6}
-        onPress={() => navigation.navigate('ChatWithPerson', {
-          email,
-          name
-        })}
+        onPress={() =>
+          navigation.navigate('ChatWithPerson', {
+            email,
+            name,
+          })
+        }
       >
         <Image source={require('../assets/friend1.png')} style={styles.image} />
         <View style={styles.chatInfo}>
           <View style={styles.chatNameAndTime}>
-            <Text style={[styles.chatName, { fontFamily: 'LeagueSpartan_600SemiBold' }]}>{name ? name : ''}</Text>
-            <Text style={[styles.chatTime, { fontFamily: 'LeagueSpartan_400Regular' }]}>{MessageInf?.date ? MessageInf?.date : ''}</Text>
+            <Text
+              style={[
+                styles.chatName,
+                { fontFamily: 'LeagueSpartan_600SemiBold' },
+              ]}
+            >
+              {name ? name : ''}
+            </Text>
+            <Text
+              style={[
+                styles.chatTime,
+                { fontFamily: 'LeagueSpartan_400Regular' },
+              ]}
+            >
+              {MessageInf?.date ? MessageInf?.date : ''}
+            </Text>
           </View>
-          <Text style={[styles.chatMessage, { fontFamily: 'LeagueSpartan_400Regular' }]}>{MessageInf?.message ? MessageInf.message : ''}</Text>
+          <Text
+            style={[
+              styles.chatMessage,
+              { fontFamily: 'LeagueSpartan_400Regular' },
+            ]}
+          >
+            {MessageInf?.type !== 'text' && MessageInf?.type}
+            {MessageInf?.message && MessageInf?.type === 'text'
+              ? MessageInf.message
+              : ''}
+          </Text>
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.header}>
-        <Text style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Chats</Text>
+        <Text
+          style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}
+        >
+          Chats
+        </Text>
         <Icon name="user-friends" size={24} color="#000" />
       </View>
       <ScrollView>
-        {
-          contacts ? contacts.map(renderItem) : (<Text>Loading...</Text>)
-        }
+        {contacts ? (
+          contacts.map(renderItem)
+        ) : (
+          <ActivityIndicator size={'large'} color={'#00A19D'} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -89,8 +137,8 @@ const ChatScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   loadingContainer: {
     flex: 1,
@@ -144,7 +192,7 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingBottom: 10,
-  }
+  },
 });
 
 export default ChatScreen;

@@ -38,6 +38,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     latitude: 28.662005864992164,
     longitude: -106.03918117853922,
   });
+
   return (
     <SafeAreaView style={styles.bg}>
       {Platform.OS !== 'web' ? (

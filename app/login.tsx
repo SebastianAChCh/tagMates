@@ -2,7 +2,17 @@ import * as React from 'react';
 import { reloadAsync } from 'expo-updates';
 import { LeagueSpartan_800ExtraBold } from '@expo-google-fonts/league-spartan';
 import { useFonts } from 'expo-font';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, StatusBar, Image } from 'react-native'
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Platform,
+  StatusBar,
+  Image,
+} from 'react-native';
 import { LogInType } from '../types/Session';
 import { useAuth } from '../providers/Authentication';
 
@@ -16,33 +26,53 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const handleLogin = async (): Promise<void> => {
     if (logIn && session!.email && session!.password) {
       try {
-        const response = await logIn({ email: session!.email, password: session!.password });
+        const response = await logIn({
+          email: session!.email,
+          password: session!.password,
+        });
+
         if (response && Platform.OS === 'web' && setLoginSuccess) {
           setLoginSuccess(true);
         } else if (response) {
-          console.log('All ok');
-
           await reloadAsync();
         }
       } catch (error) {
         if (error instanceof Error) console.error(error.message);
       }
     }
-  }
+  };
 
   if (!fontsLoaded) {
-    return <View style={styles.container}><Text>Cargando...</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Cargando...</Text>
+      </View>
+    );
   }
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.headerContainer}>
         <View style={styles.logoContainer}>
-          <Text style={[styles.logoText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>TagMates</Text>
+          <Text
+            style={[
+              styles.logoText,
+              { fontFamily: 'LeagueSpartan_800ExtraBold' },
+            ]}
+          >
+            TagMates
+          </Text>
         </View>
       </View>
       <View style={styles.content}>
-        <Text style={[styles.welcomeText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>¡Bienvenido!</Text>
+        <Text
+          style={[
+            styles.welcomeText,
+            { fontFamily: 'LeagueSpartan_800ExtraBold' },
+          ]}
+        >
+          ¡Bienvenido!
+        </Text>
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
@@ -50,7 +80,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           onChangeText={(e) => {
             setSession((oldData) => ({
               ...oldData,
-              ['email']: e
+              ['email']: e,
             }));
           }}
         />
@@ -60,21 +90,39 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           onChangeText={(e) => {
             setSession((oldData) => ({
               ...oldData,
-              ['password']: e
+              ['password']: e,
             }));
           }}
           secureTextEntry
         />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleLogin()}
-        >
-          <Text style={[styles.buttonText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Iniciar sesión</Text>
+        <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
+          <Text
+            style={[
+              styles.buttonText,
+              { fontFamily: 'LeagueSpartan_800ExtraBold' },
+            ]}
+          >
+            Iniciar sesión
+          </Text>
         </TouchableOpacity>
         <View style={styles.footer}>
-          <Text style={[styles.forgotPasswordText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>¿Olvidaste tu contraseña?</Text>
+          <Text
+            style={[
+              styles.forgotPasswordText,
+              { fontFamily: 'LeagueSpartan_800ExtraBold' },
+            ]}
+          >
+            ¿Olvidaste tu contraseña?
+          </Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={[styles.registerText, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}>Regístrame</Text>
+            <Text
+              style={[
+                styles.registerText,
+                { fontFamily: 'LeagueSpartan_800ExtraBold' },
+              ]}
+            >
+              Regístrame
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -139,8 +187,8 @@ const styles = StyleSheet.create({
   },
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   button: {
     width: '100%',
