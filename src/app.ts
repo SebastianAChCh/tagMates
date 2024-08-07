@@ -112,11 +112,13 @@ socketIo.on('connection', (serverIo: Socket) => {
   //detects when a new user is created
   dbRealTime.ref('Users').on('child_added', (users) => {
     userCoord(users.val(), serverIo);
+    socketIo.to(users.val().email).emit('currentUserPosition', users.val());
   }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //detects when the position of a user has changed
   dbRealTime.ref('Users').on('child_changed', (users) => {
     userCoord(users.val(), serverIo);
+    socketIo.to(users.val().email).emit('currentUserPosition', users.val());
   }, (errorObject) => console.error('The read failed: ' + errorObject.name));
 
   //when the user send the request it'll be sent to socket.io and will be send through it to tell at the user if is connected in that moment that a new request has came otherwise

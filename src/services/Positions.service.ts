@@ -3,6 +3,7 @@ import { dbRealTime as db } from '../configurations/firebaseAdmin';
 import { NewCoordinates, CalculateDistance, Coordinates, updateProximityState, tagsAnalyze } from '../types/Positions';
 import { UsersModel } from '../types/Users';
 import { Users } from './Users.service';
+import { projectId } from '../configurations/conf';
 
 export class Positions {
     private UserMethods: Users;
@@ -80,12 +81,13 @@ export class Positions {
         try {
             const stream = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [{ role: "system", content: 'You are a helpful assistant that analyze if the tags' }, { role: "user", content: Message.message }],
-                stream: true,
-                response_format: { type: 'json_object' }
+                messages: [{ role: "system", content: 'You are a helpful assistant that analyze if two users are compatible through their tags and what you will return its how much is compatible the user b with the user a in a percentage' }, { role: "user", content: `UserA tags: ${usersTags.userTags1} and UserB tags: ${usersTags.userTags2}` }],
+                stream: false,
             });
 
             if (stream.choices[0].message.content) {
+                console.log(stream.choices[0].message.content);
+
             }
 
             return true;
@@ -93,7 +95,6 @@ export class Positions {
             throw new Error(error.message);
         }
 
-        return false;
     }
 
     public calculateDistance(coordinates: CalculateDistance): boolean {
