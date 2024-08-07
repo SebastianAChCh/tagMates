@@ -43,6 +43,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
     setSocket(SocketIo);
 
+    SocketIo.emit('connected', userInfo?.email);
+
     return () => {
       SocketIo.disconnect();
     };
@@ -51,7 +53,20 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   useEffect(() => {
     if (socket) {
       socket.on('positionUser', (user: UsersModel) => {
-        setDestination((newUser) => [...newUser, user]);
+        const userExist = destination.some(
+          (users) => users.email === user.email
+        );
+        if (userExist) {
+          setDestination(
+            destination.map((users) =>
+              users.email === user.email
+                ? { ...users, coordinates: user.coordinates }
+                : users
+            )
+          );
+        } else {
+          setDestination((newUser) => [...newUser, user]);
+        }
       });
 
       socket.on('currentUserPosition', (user: UsersModel) => {
