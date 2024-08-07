@@ -121,7 +121,7 @@ const AuthProvider = ({ children }: PropsProvider) => {
 
   const logIn = async (data: LogInType): Promise<any> => {
     try {
-      const response = await fetch(`http://192.168.2.10:3000/logIn`, {
+      const response = await fetch(`http://192.168.1.94:3000/logIn`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

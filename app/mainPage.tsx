@@ -1,15 +1,12 @@
 import {
-  View,
-  Text,
   StyleSheet,
-  Image,
   Platform,
   StatusBar,
-  TouchableOpacity,
   SafeAreaView,
+  FlatList,
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../providers/Authentication';
 import Menu from '../components/Menu';
 import Header from '../components/Header';
@@ -19,25 +16,49 @@ import {
   LeagueSpartan_800ExtraBold,
   useFonts,
 } from '@expo-google-fonts/league-spartan';
+import { io, Socket } from 'socket.io-client';
+import { UsersModel } from '../../tagMatesBackEnd/src/types/Users';
+import UserMarker from '../components/UserMarker';
+import { Coordinates } from '../types/Positions';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
-  const { userInfo } = useAuth();
-
+  const { userInfo, INITIAL_URL } = useAuth();
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
     LeagueSpartan_600SemiBold,
     LeagueSpartan_400Regular,
   });
 
-  const [origin, setOrigin] = useState({
+  const [socket, setSocket] = useState<Socket<any>>();
+
+  const [origin, setOrigin] = useState<Coordinates>({
     latitude: 28.662005864992164,
     longitude: -106.03918117853922,
   });
 
-  const [destination, setDestination] = useState({
-    latitude: 28.662005864992164,
-    longitude: -106.03918117853922,
-  });
+  const [destination, setDestination] = useState<UsersModel[]>([]);
+
+  useEffect(() => {
+    const SocketIo: Socket = io(`${INITIAL_URL}`);
+
+    setSocket(SocketIo);
+
+    return () => {
+      SocketIo.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('positionUser', (user: UsersModel) => {
+        setDestination((newUser) => [...newUser, user]);
+      });
+
+      socket.on('currentUserPosition', (user: UsersModel) => {
+        if (user.coordinates) setOrigin(user.coordinates);
+      });
+    }
+  }, [socket]);
 
   return (
     <SafeAreaView style={styles.bg}>
@@ -52,6 +73,24 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           }}
         >
           <Marker coordinate={origin} />
+          <FlatList
+            data={destination}
+            renderItem={({ item }) => (
+              <UserMarker
+                userIcon={
+                  item.avatar_path
+                    ? item.avatar_path
+                    : require('../assets/friend2.png')
+                }
+                navigation={navigation}
+                Coordinates={
+                  item.coordinates
+                    ? item.coordinates
+                    : { latitude: 0, longitude: 0 }
+                }
+              />
+            )}
+          />
         </MapView>
       ) : (
         <></>
