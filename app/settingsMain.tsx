@@ -1,12 +1,29 @@
-import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
+import {
+  LeagueSpartan_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/league-spartan';
 import React, { useEffect, useMemo, useState } from 'react';
+<<<<<<< HEAD
 import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+=======
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  Platform,
+  StatusBar,
+  ScrollView,
+} from 'react-native';
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
 import SettingIcon from '../components/SettingIcon';
 import { useAuth } from '../providers/Authentication';
 import Header from '../components/Header';
-import Menu from '../components/Menu'
+import Menu from '../components/Menu';
 
-const SettingsScreen = ({ navigation } : {navigation : any}) => {
+const SettingsScreen = ({ navigation }: { navigation: any }) => {
   const { getProximityState, INITIAL_URL, userInfo } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -19,7 +36,7 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
         console.error(stateProximity);
       }
     }
-  }
+  };
   useMemo(() => executeGetProximityState(), []);
 
   useEffect(() => {
@@ -29,8 +46,8 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
   }, [isEnabled]);
 
   const toggleSwitch = () => {
-    setIsEnabled(previousState => !previousState);
-  }
+    setIsEnabled((previousState) => !previousState);
+  };
 
   const [fontsLoaded] = useFonts({
     LeagueSpartan_800ExtraBold,
@@ -41,83 +58,118 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
       await fetch(`${INITIAL_URL}/changeProximityState`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: userInfo?.email,
-          state: isEnabled
-        })
+          state: isEnabled,
+        }),
       });
-
     } catch (error) {
       if (error instanceof Error) console.error(error.message);
     }
-  }
+  };
 
   if (!fontsLoaded) {
     return <Text>Cargando...</Text>;
   }
 
+  function Temp() {}
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
+<<<<<<< HEAD
       
       <Header title='Settings' navigation={navigation}/>
       <ScrollView style={styles.scrollView}>
       
 
+=======
+      <Header title="Settings" navigation={navigation} />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
         <View style={styles.boxG}>
-          <SettingIcon icon='chevron-right' route='Location' src={require('../assets/images/location.png')} />
+          <SettingIcon
+            icon="chevron-right"
+            route="Location"
+            src={require('../assets/images/location.png')}
+          />
           <View style={styles.line} />
 
-          <SettingIcon icon='chevron-right' route='Notifications' src={require('../assets/images/notification.png')} />
+          <SettingIcon
+            icon="chevron-right"
+            route="Notifications"
+            src={require('../assets/images/notification.png')}
+          />
           <View style={styles.line} />
-          
-          <SettingIcon icon='chevron-right' route='Blocks' src={require('../assets/images/block.png')} />
+
+          <SettingIcon
+            icon="chevron-right"
+            route="Blocks"
+            src={require('../assets/images/block.png')}
+          />
         </View>
 
         <View style={styles.boxG2}>
-          <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/heart.png')} />
-          <View style={styles.line} />
-        
-
-        <View style={styles.switchContainer}>
-          <Image source={require('../assets/images/proximity.png')}
-            style={styles.image} />
-          <Text style={styles.optionText}>Proximity Vibration</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#00A19D" }}
-            thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
-            onValueChange={toggleSwitch}
-            value={isEnabled}
+          <SettingIcon
+            icon="chevron-right"
+            route="Search Preferences"
+            src={require('../assets/images/heart.png')}
           />
+          <View style={styles.line} />
+
+          <View style={styles.switchContainer}>
+            <Image
+              source={require('../assets/images/proximity.png')}
+              style={styles.image}
+            />
+            <Text style={styles.optionText}>Proximity Vibration</Text>
+            <Switch
+              trackColor={{ false: '#767577', true: '#00A19D' }}
+              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
           </View>
-     
         </View>
-        
-        <View style={styles.boxG3}> 
-        <SettingIcon icon='chevron-right' route='Delete Account' src={require('../assets/images/deleteAcc.png')} />
-        <View style={styles.line} />
-        
 
-        <SettingIcon icon='chevron-right' route='Log Out' src={require('../assets/images/cerrarSes.png')} />
-        <View style={styles.line} />
-        
+        <View style={styles.boxG3}>
+          <SettingIcon
+            icon="chevron-right"
+            route="Delete Account"
+            src={require('../assets/images/deleteAcc.png')}
+          />
+          <View style={styles.line} />
 
-        <SettingIcon icon='chevron-right' route='Terms and Privacy' src={require('../assets/images/terms.png')} />
+          <SettingIcon
+            icon="chevron-right"
+            route="Log Out"
+            src={require('../assets/images/cerrarSes.png')}
+          />
+          <View style={styles.line} />
+
+          <SettingIcon
+            icon="chevron-right"
+            route="Terms and Privacy"
+            src={require('../assets/images/terms.png')}
+          />
         </View>
       </ScrollView>
+<<<<<<< HEAD
 
       <Menu navigation={navigation} />
       
+=======
+      <Menu navigation={navigation} />
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-
   scrollView: {
     marginHorizontal: 20,
-    flex: 1
+    flexGrow: 1,
   },
 
   image: {
@@ -126,52 +178,52 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 
-  
   optionText: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16
+    fontSize: 16,
   },
+
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
     paddingVertical: 10,
-    padding: 15
+    padding: 15,
   },
 
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
   boxG: {
-    borderColor: "#B2AEB1",
+    borderColor: '#B2AEB1',
     borderWidth: 0.5,
     borderRadius: 15,
   },
 
   boxG2: {
-    borderColor: "#B2AEB1",
+    borderColor: '#B2AEB1',
     borderWidth: 0.5,
     borderRadius: 15,
-    top: 20
+    top: 20,
   },
 
   boxG3: {
-    borderColor: "#B2AEB1",
+    borderColor: '#B2AEB1',
     borderWidth: 0.5,
     borderRadius: 15,
-    top: 40
+    top: 40,
   },
 
   line: {
     height: 0.5,
-    backgroundColor: '#B2AEB1', 
-    width: "85%",
-    left: 58
+    backgroundColor: '#B2AEB1',
+    width: '85%',
+    left: 58,
   },
 });
 
