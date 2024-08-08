@@ -98,48 +98,6 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           />
         </View>
 
-        <View style={styles.boxG}>
-          <SettingIcon
-            icon="chevron-right"
-            route="Location"
-            src={require('../assets/images/location.png')}
-          />
-          <View style={styles.line} />
-
-          <SettingIcon
-            icon="chevron-right"
-            route="Notifications"
-            src={require('../assets/images/notification.png')}
-          />
-          <View style={styles.line} />
-
-          <SettingIcon
-            icon="chevron-right"
-            route="Blocks"
-            src={require('../assets/images/block.png')}
-          />
-        </View>
-        <View style={styles.boxG}>
-          <SettingIcon
-            icon="chevron-right"
-            route="Location"
-            src={require('../assets/images/location.png')}
-          />
-          <View style={styles.line} />
-
-          <SettingIcon
-            icon="chevron-right"
-            route="Notifications"
-            src={require('../assets/images/notification.png')}
-          />
-          <View style={styles.line} />
-
-          <SettingIcon
-            icon="chevron-right"
-            route="Blocks"
-            src={require('../assets/images/block.png')}
-          />
-        </View>
         <View style={styles.boxG2}>
           <SettingIcon
             icon="chevron-right"
