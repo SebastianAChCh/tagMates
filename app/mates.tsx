@@ -1,19 +1,117 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 import Header from '../components/Header';
+import { useAuth } from '../providers/Authentication';
+import { io, Socket } from 'socket.io-client';
+import { UsersModel } from '../../tagMatesBackEnd/src/types/Users';
 
-const MatesScreen = ({navigation}: {navigation: any}) => {
+const MatesScreen = ({ navigation }: { navigation: any }) => {
+  const { INITIAL_URL, userInfo, generateUUID } = useAuth();
+  const [socket, setSocket] = useState<Socket<any>>();
   const [requests, setRequests] = useState([
-    { id: '1', name: 'Elia Muñoz', image: '../assets/images/diary.png', matchPercentage: '70%' },
-    { id: '2', name: 'Juan Butera', image: '../assets/images/chat.png', matchPercentage: '50%' },
+    {
+      id: '1',
+      email: 'EliaMuñoz@gmail.com',
+      name: 'Elia Muñoz',
+      image: '../assets/images/diary.png',
+      matchPercentage: '70%',
+    },
+    {
+      id: '2',
+      email: 'JuanButera@gmail.com',
+      name: 'Juan Butera',
+      image: '../assets/images/chat.png',
+      matchPercentage: '50%',
+    },
   ]);
 
-  const confirmRequest = (id: any) => {
-    console.log(`Confirmando solicitud con id: ${id}`);
+  useEffect(() => {
+    const _Socket: Socket = io(`${INITIAL_URL}`);
+
+    setSocket(_Socket);
+
+    _Socket.emit('connected', userInfo?.email);
+
+    return () => {
+      _Socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('RequestUser', (data: { sender: string; receiver: string }) => {
+        let dataUser: UsersModel | null = null;
+        (async () => {
+          try {
+            const response = await fetch(`${INITIAL_URL}/getInformationUser`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: data.sender,
+              }),
+            });
+
+            dataUser = await response.json();
+          } catch (error) {
+            console.error(error);
+          }
+        })();
+
+        setRequests([
+          ...requests,
+          {
+            id: generateUUID ? generateUUID(10) : '',
+            email: data.sender,
+            name: dataUser!.fullname ? dataUser!.fullname : '',
+            image: '../assets/images/chat.png',
+            matchPercentage: '100%',
+          },
+        ]);
+      });
+    }
+  }, [socket]);
+
+  const confirmRequest = async (id: any) => {
+    const userInf = requests.map((users) =>
+      users.id === id ? users.name : ''
+    );
+
+    try {
+      await fetch(`${INITIAL_URL}/saveContact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userInfo?.email,
+          user: userInf,
+        }),
+      });
+
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request.id !== id)
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const deleteRequest = (id: any) => {
-    setRequests((prevRequests) => prevRequests.filter((request) => request.id !== id));
+    setRequests((prevRequests) =>
+      prevRequests.filter((request) => request.id !== id)
+    );
   };
 
   const renderRequestItem = ({ item }: { item: any }) => (
@@ -23,10 +121,16 @@ const MatesScreen = ({navigation}: {navigation: any}) => {
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.matchPercentage}>{item.matchPercentage}</Text>
       </View>
-      <TouchableOpacity style={styles.confirmButton} onPress={() => confirmRequest(item.id)}>
+      <TouchableOpacity
+        style={styles.confirmButton}
+        onPress={() => confirmRequest(item.id)}
+      >
         <Text style={styles.confirmButtonText}>Confirm</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => deleteRequest(item.id)}
+      >
         <Text style={styles.deleteButtonText}>Delete</Text>
       </TouchableOpacity>
     </View>
@@ -34,9 +138,8 @@ const MatesScreen = ({navigation}: {navigation: any}) => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <Header title='Zaps' navigation={navigation} />
+      <Header title="Zaps" navigation={navigation} />
       <View style={styles.container}>
-      
         <View style={styles.tabContainer}>
           <TouchableOpacity style={styles.tabButton}>
             <Text style={styles.tabButtonText}>Suggestions</Text>
@@ -95,8 +198,8 @@ const styles = StyleSheet.create({
   },
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    backgroundColor: 'white',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   avatar: {
     width: 50,

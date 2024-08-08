@@ -1,6 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client'
-import { FlatList, Image, KeyboardAvoidingView, Modal, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { io, Socket } from 'socket.io-client';
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '../providers/Authentication';
@@ -12,7 +24,6 @@ import DocumentPicker from '../components/DocumentPicker';
 import ModalComponent from '../components/Modal';
 
 const ChatScreen = ({ route }: any) => {
-
   const [message, setMessage] = useState<Message | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [hiddenImgPick, setHiddenImgPick] = useState<boolean>(false);
@@ -31,20 +42,19 @@ const ChatScreen = ({ route }: any) => {
       const response = await fetch(`${INITIAL_URL}/loadMessages`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: userInfo?.email,
-          user: email
-        })
+          user: email,
+        }),
       });
 
       const data = await response.json();
 
       setMessages(data.response);
-
     } catch (error) {
-      console.error(error instanceof Error ? 'Something went wrong ' + error.message : '');
+      console.error(error);
     }
   };
 
@@ -53,7 +63,7 @@ const ChatScreen = ({ route }: any) => {
 
     setSocket(_Socket);
 
-    _Socket.emit('connected', (userInfo?.email));
+    _Socket.emit('connected', userInfo?.email);
 
     loadOldMessages();
 
@@ -66,60 +76,98 @@ const ChatScreen = ({ route }: any) => {
     if (socket) {
       socket.on('MessageText', (messageInfo: { messageInfo: Message }) => {
         if (messageInfo.messageInfo.receiver !== userInfo?.email) return;
-        setMessages(prevItems => [...prevItems, messageInfo.messageInfo]);
+        setMessages((prevItems) => [...prevItems, messageInfo.messageInfo]);
       });
 
       socket.on('MessageFile', (messageInfo: any) => {
         if (messageInfo.messageInfo.receiver !== userInfo?.email) return;
-        setMessages(prevItems => [...prevItems, messageInfo.messageInfo]);
+        setMessages((prevItems) => [...prevItems, messageInfo.messageInfo]);
       });
     }
   }, [socket]);
 
-  const saveMessage = async (messageInfo: Message, typeUrl: string): Promise<void> => {
+  const saveMessage = async (
+    messageInfo: Message,
+    typeUrl: string
+  ): Promise<void> => {
     await fetch(`${INITIAL_URL}/${typeUrl}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: userInfo?.email, Message: messageInfo })
+      body: JSON.stringify({ email: userInfo?.email, Message: messageInfo }),
     });
   };
 
   const handleSend = (): void => {
     if (socket && message?.message.trim()) {
-      socket.emit('Message', { message: message.message, type: 'text', sender: userInfo?.email, receiver: email });
-      setMessages(prevItems => [...prevItems, { message: message.message, type: message.type, sender: userInfo!.email, receiver: email }]);
-      saveMessage({ message: message.message, type: message.type, sender: userInfo!.email, receiver: email }, 'saveTextMessage');
+      socket.emit('Message', {
+        message: message.message,
+        type: 'text',
+        sender: userInfo?.email,
+        receiver: email,
+      });
+      setMessages((prevItems) => [
+        ...prevItems,
+        {
+          message: message.message,
+          type: message.type,
+          sender: userInfo!.email,
+          receiver: email,
+        },
+      ]);
+      saveMessage(
+        {
+          message: message.message,
+          type: message.type,
+          sender: userInfo!.email,
+          receiver: email,
+        },
+        'saveTextMessage'
+      );
       setMessage({ message: '', sender: '', receiver: '', type: '' });
       chatRef.current?.focus();
     }
-
   };
 
   useEffect(() => {
     if (files && socket && message?.message) {
-      setMessages(prevItems => [...prevItems, { message: message.message, type: message.type, sender: userInfo!.email, receiver: email }]);
-      socket.emit('Message', { message: message.message, type: message.type, sender: userInfo?.email, receiver: email });
+      setMessages((prevItems) => [
+        ...prevItems,
+        {
+          message: message.message,
+          type: message.type,
+          sender: userInfo!.email,
+          receiver: email,
+        },
+      ]);
+      socket.emit('Message', {
+        message: message.message,
+        type: message.type,
+        sender: userInfo?.email,
+        receiver: email,
+      });
       setMessage({ message: '', sender: '', receiver: '', type: '' });
       setFiles(false);
       chatRef.current?.focus();
     }
   }, [files, message]);
 
-
   return (
     <SafeAreaView style={styles.container}>
-
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flexOne}>
-
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.flexOne}
+      >
         <View style={styles.header}>
-
           <TouchableOpacity>
             <FontAwesome5 name="chevron-left" size={20} color="#000" />
           </TouchableOpacity>
 
-          <Image source={require('../assets/friend1.png')} style={styles.avatar} />
+          <Image
+            source={require('../assets/friend1.png')}
+            style={styles.avatar}
+          />
 
           <Text style={styles.username}>{name}</Text>
 
@@ -133,12 +181,16 @@ const ChatScreen = ({ route }: any) => {
         <FlatList
           data={messages}
           key={generateUUID && generateUUID(10)}
-          renderItem={({ item }) => <MessageComponent item={item} INITIAL_URL={INITIAL_URL ? INITIAL_URL : ''} />}
+          renderItem={({ item }) => (
+            <MessageComponent
+              item={item}
+              INITIAL_URL={INITIAL_URL ? INITIAL_URL : ''}
+            />
+          )}
           style={styles.messageArea}
         />
 
         <View style={styles.inputContainer}>
-
           <TouchableOpacity onPress={() => setShowActions(true)}>
             <FontAwesome5 name="plus" size={24} color="#000" />
           </TouchableOpacity>
@@ -146,12 +198,14 @@ const ChatScreen = ({ route }: any) => {
           <TextInput
             style={styles.input}
             value={message?.message}
-            onChangeText={(e) => setMessage({
-              message: e,
-              receiver: '',
-              sender: '',
-              type: 'text'
-            })}
+            onChangeText={(e) =>
+              setMessage({
+                message: e,
+                receiver: '',
+                sender: '',
+                type: 'text',
+              })
+            }
             placeholder="Escribe un mensaje..."
             ref={chatRef}
           />
@@ -167,21 +221,31 @@ const ChatScreen = ({ route }: any) => {
         visible={showActions}
         onRequestClose={() => setShowActions(false)}
       >
-
-        <TouchableOpacity style={styles.modalBackdrop} onPress={() => setShowActions(false)}>
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          onPress={() => setShowActions(false)}
+        >
           <View style={styles.actionsContainer}>
-
-            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenImgPick(true)}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => setHiddenImgPick(true)}
+            >
               <FontAwesome name="file-photo-o" size={24} color="#000" />
               <Text>Fotos</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenCam(true)}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => setHiddenCam(true)}
+            >
               <FontAwesome5 name="camera" size={24} color="#000" />
               <Text>Cámara</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton} onPress={() => setHiddenFiles(true)}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => setHiddenFiles(true)}
+            >
               <FontAwesome5 name="file" size={24} color="#000" />
               <Text>Documento</Text>
             </TouchableOpacity>
@@ -190,18 +254,34 @@ const ChatScreen = ({ route }: any) => {
       </Modal>
 
       <ModalComponent hiddenState={hiddenCam} setHidden={setHiddenCam}>
-        <Camera email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+        <Camera
+          email={userInfo!.email}
+          sender={userInfo!.email}
+          receiver={email}
+          setMessage={setMessage}
+          setFile={setFiles}
+        />
       </ModalComponent>
 
       <ModalComponent hiddenState={hiddenImgPick} setHidden={setHiddenImgPick}>
-        <ImagePicker email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+        <ImagePicker
+          email={userInfo!.email}
+          sender={userInfo!.email}
+          receiver={email}
+          setMessage={setMessage}
+          setFile={setFiles}
+        />
       </ModalComponent>
 
       <ModalComponent hiddenState={hiddenFiles} setHidden={setHiddenFiles}>
-        <DocumentPicker email={userInfo!.email} sender={userInfo!.email} receiver={email} setMessage={setMessage} setFile={setFiles} />
+        <DocumentPicker
+          email={userInfo!.email}
+          sender={userInfo!.email}
+          receiver={email}
+          setMessage={setMessage}
+          setFile={setFiles}
+        />
       </ModalComponent>
-
-
     </SafeAreaView>
   );
 };
@@ -212,7 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   flexOne: {
-    flex: 1
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -279,7 +359,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 60,
-  }
+  },
 });
 
 export default ChatScreen;

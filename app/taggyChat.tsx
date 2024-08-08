@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import {
   FlatList,
   Image,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   SafeAreaView,
   StatusBar,
@@ -14,8 +12,10 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
 import Header from '../components/Header';
+import { useAuth } from '../providers/Authentication';
 
 interface Message {
   id: number;
@@ -26,14 +26,67 @@ const TaggyScreen = ({ navigation }: { navigation: any }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [showActions, setShowActions] = useState<boolean>(false);
+  const [socket, setSocket] = useState<Socket<any>>();
+  const { INITIAL_URL, userInfo } = useAuth();
 
   const sendMessage = () => {
     if (message.trim().length > 0) {
-      const newMessage: Message = { id: Date.now(), text: message };
-      setMessages([...messages, newMessage]);
+      // const newMessage: Message = { id: Date.now(), text: message };
+      // setMessages([...messages, newMessage]);
+      if (socket) {
+        socket.emit('MessageTaggy', {
+          user: 'sebastian',
+          sender: 'sebastian',
+          receiver: 'chatgpt',
+          message: 'me podrias devolver un hola',
+          type: 'text',
+        });
+      }
       setMessage('');
     }
   };
+
+  const loadOldMessages = async () => {
+    try {
+      const response = await fetch(`${INITIAL_URL}/loadMessages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userInfo?.email,
+        }),
+      });
+
+      const data = await response.json();
+
+      setMessages(data.response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const _socket: Socket = io(`${INITIAL_URL}`);
+
+    setSocket(_socket);
+
+    // loadOldMessages();
+
+    _socket.emit('connected', userInfo?.email);
+
+    return () => {
+      _socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('ResponseTaggy', (response: any) => {
+        console.log(response);
+      });
+    }
+  }, [socket]);
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>

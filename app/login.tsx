@@ -95,7 +95,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           }}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Home")}>
+        <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
           <Text
             style={[
               styles.buttonText,
@@ -227,7 +227,5 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     position: 'absolute',
     bottom: 0,
-    
-
   },
 });

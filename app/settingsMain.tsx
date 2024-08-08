@@ -20,7 +20,7 @@ import Header from '../components/Header';
 import Menu from '../components/Menu';
 
 const SettingsScreen = ({ navigation }: { navigation: any }) => {
-  const { getProximityState, INITIAL_URL, userInfo } = useAuth();
+  const { getProximityState, INITIAL_URL, userInfo, logOut } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
 
   const executeGetProximityState = async () => {
@@ -70,14 +70,13 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
     return <Text>Cargando...</Text>;
   }
 
-  function Temp() {}
-
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       <Header title="Settings" navigation={navigation} />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.boxG}>
           <SettingIcon
+            handleClick={() => {}}
             icon="chevron-right"
             route="Location"
             src={require('../assets/images/location.png')}
@@ -85,6 +84,7 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           <View style={styles.line} />
 
           <SettingIcon
+            handleClick={() => {}}
             icon="chevron-right"
             route="Notifications"
             src={require('../assets/images/notification.png')}
@@ -92,6 +92,7 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           <View style={styles.line} />
 
           <SettingIcon
+            handleClick={() => {}}
             icon="chevron-right"
             route="Blocks"
             src={require('../assets/images/block.png')}
@@ -100,6 +101,7 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
 
         <View style={styles.boxG2}>
           <SettingIcon
+            handleClick={() => {}}
             icon="chevron-right"
             route="Search Preferences"
             src={require('../assets/images/heart.png')}
@@ -123,6 +125,23 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
 
         <View style={styles.boxG3}>
           <SettingIcon
+            handleClick={() => {
+              (async () => {
+                await fetch(`${INITIAL_URL}/deleteUser`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    email: userInfo?.email,
+                  }),
+                });
+
+                if (logOut) {
+                  logOut();
+                }
+              })();
+            }}
             icon="chevron-right"
             route="Delete Account"
             src={require('../assets/images/deleteAcc.png')}
@@ -130,6 +149,11 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           <View style={styles.line} />
 
           <SettingIcon
+            handleClick={() => {
+              if (logOut) {
+                logOut();
+              }
+            }}
             icon="chevron-right"
             route="Log Out"
             src={require('../assets/images/cerrarSes.png')}
@@ -137,6 +161,7 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           <View style={styles.line} />
 
           <SettingIcon
+            handleClick={() => {}}
             icon="chevron-right"
             route="Terms and Privacy"
             src={require('../assets/images/terms.png')}

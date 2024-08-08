@@ -20,6 +20,7 @@ type propsContext = {
   getProximityState?: () => Promise<boolean | string>;
   INITIAL_URL?: string;
   generateUUID?: (digits: number) => string;
+  logOut?: () => Promise<any>;
 };
 
 type PropsProvider = {
@@ -230,6 +231,16 @@ const AuthProvider = ({ children }: PropsProvider) => {
     return false;
   };
 
+  const logOut = async (): Promise<void> => {
+    if (Platform.OS === 'web') {
+      await AsyncStorage.removeItem('token');
+    } else {
+      await secureStore.deleteItemAsync('token');
+    }
+    await fetch(`${INITIAL_URL}/logOut`);
+    setLoginSuccess(false);
+  };
+
   const generateUUID = (digits = 10): string => {
     let str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ';
     let uuid = [];
@@ -252,6 +263,7 @@ const AuthProvider = ({ children }: PropsProvider) => {
         getProximityState,
         INITIAL_URL,
         generateUUID,
+        logOut,
       }}
     >
       {children}
