@@ -16,3 +16,4 @@ export const api_secret = process.env.api_secret;
 export const SALT_ROUNDS: number = Number(process.env.SALT_ROUNDS);
 export const SECRET_KEY: string = String(process.env.SECRET_KEY);
 export const NODE_ENV: string = String(process.env.NODE_ENV);
+export const OPENAI_API_KEY: string = String(process.env.OPENAI_API_KEY);

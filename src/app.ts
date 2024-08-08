@@ -127,7 +127,7 @@ socketIo.on('connection', (serverIo: Socket) => {
     let acceptRequest: string = '';
     Users.forEach(user => {
       if (user.user === data.receiver) {
-        socketIo.to(user.socketId).emit('RequestUser', acceptRequest);
+        socketIo.to(user.socketId).emit('RequestUser', { data });
         //the request will be saved in the database just in case the user does not accept it immediately
         requests.addRequest({ sender: data.sender, receiver: data.receiver });
       }
@@ -158,14 +158,16 @@ socketIo.on('connection', (serverIo: Socket) => {
   });
 
   serverIo.on('MessageTaggy', (message: MessageTaggy) => {
+
     const TaggyMethods = new Taggy();
     let responseMessage: any;
     (async () => {
       responseMessage = await TaggyMethods.getMessage(message);
-    });
+    })();
 
     Users.forEach(user => {
       if (user.user === message.user) {
+        console.log('kajsdhfajklshd');
         socketIo.to(user.socketId).emit('ResponseTaggy', responseMessage);
       }
     })

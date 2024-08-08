@@ -4,7 +4,7 @@ import { isAuth } from '../middlewares/isAuth';
 
 const router = Router();
 
-router.post('/getInformationUser', isAuth, userInformation);
+router.post('/getInformationUser', userInformation);
 router.post('/deleteUser', isAuth, deleteUser);
 
 router.post('/addTags', addTags);

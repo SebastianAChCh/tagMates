@@ -4,7 +4,7 @@ import { Taggy } from '../../services/Taggy.service';
 export const loadMessages = async (req: Request, res: Response) => {
     const TaggyMethods = new Taggy();
     try {
-        const messages = await TaggyMethods.loadMessages(req.body);
+        const messages = await TaggyMethods.loadMessages(req.body.email);
 
         if (!messages) {
             return res.json({
