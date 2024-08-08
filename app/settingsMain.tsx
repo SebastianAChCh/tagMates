@@ -1,9 +1,11 @@
 import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
 import SettingIcon from '../components/SettingIcon';
 import { useAuth } from '../providers/Authentication';
 import Header from '../components/Header';
+import Menu from '../components/Menu'
 
 const SettingsScreen = ({ navigation } : {navigation : any}) => {
   const { getProximityState, INITIAL_URL, userInfo } = useAuth();
@@ -59,16 +61,24 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <ScrollView style={styles.scrollView}>
+      <GestureHandlerRootView>
       <Header title='Settings' navigation={navigation}/>
+      <ScrollView style={styles.scrollView}>
+      
 
-        <SettingIcon icon='chevron-right' route='Location' src={require('../assets/images/location.png')} />
+        <View style={styles.boxG}>
+          <SettingIcon icon='chevron-right' route='Location' src={require('../assets/images/location.png')} />
+          <View style={styles.line} />
 
-        <SettingIcon icon='chevron-right' route='Notifications' src={require('../assets/images/notification.png')} />
+          <SettingIcon icon='chevron-right' route='Notifications' src={require('../assets/images/notification.png')} />
+          <View style={styles.line} />
+          
+          <SettingIcon icon='chevron-right' route='Blocks' src={require('../assets/images/block.png')} />
+        </View>
 
-        <SettingIcon icon='chevron-right' route='Blocks' src={require('../assets/images/block.png')} />
-
-        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/heart.png')} />
+        <View style={styles.boxG2}>
+          <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/heart.png')} />
+          <View style={styles.line} />
         
 
         <View style={styles.switchContainer}>
@@ -81,73 +91,43 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
-
+          </View>
      
         </View>
+        
+        <View style={styles.boxG3}> 
+        <SettingIcon icon='chevron-right' route='Delete Account' src={require('../assets/images/deleteAcc.png')} />
+        <View style={styles.line} />
+        
 
-        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/deleteAcc.png')} />
+        <SettingIcon icon='chevron-right' route='Log Out' src={require('../assets/images/cerrarSes.png')} />
+        <View style={styles.line} />
+        
 
-        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/cerrarSes.png')} />
-
-        <SettingIcon icon='chevron-right' route='Search Preferences' src={require('../assets/images/terms.png')} />
+        <SettingIcon icon='chevron-right' route='Terms and Privacy' src={require('../assets/images/terms.png')} />
+        </View>
       </ScrollView>
+
+      <Menu />
+      </GestureHandlerRootView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
+
   scrollView: {
     marginHorizontal: 20,
+    flex: 1
   },
 
   image: {
-    height: 35,
-    width: 35,
-    borderRadius: 5
+    height: 32,
+    width: 32,
+    borderRadius: 5,
   },
-  headerTitle: {
-    fontFamily: 'LeagueSpartan_800ExtraBold',
-    fontSize: 35,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 20,
-    color: '#00A19D'
-  },
-  profileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10
-  },
-  profilePic: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10
-  },
-  profileInfo: {
-    flex: 1
-  },
-  profileName: {
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  profileDetail: {
-    fontSize: 12,
-    color: '#666'
-  },
-  optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    paddingVertical: 10
-  },
+
+  
   optionText: {
     flex: 1,
     marginLeft: 10,
@@ -158,13 +138,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
-    paddingVertical: 10
+    paddingVertical: 10,
+    padding: 15
   },
 
   AndroidSafeArea: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+
+  boxG: {
+    borderColor: "#B2AEB1",
+    borderWidth: 0.5,
+    borderRadius: 15,
+  },
+
+  boxG2: {
+    borderColor: "#B2AEB1",
+    borderWidth: 0.5,
+    borderRadius: 15,
+    top: 20
+  },
+
+  boxG3: {
+    borderColor: "#B2AEB1",
+    borderWidth: 0.5,
+    borderRadius: 15,
+    top: 40
+  },
+
+  line: {
+    height: 0.5,
+    backgroundColor: '#B2AEB1', 
+    width: "85%",
+    left: 58
   },
 });
 

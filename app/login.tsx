@@ -71,11 +71,11 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             { fontFamily: 'LeagueSpartan_800ExtraBold' },
           ]}
         >
-          ¡Bienvenido!
+          Welcome!
         </Text>
         <TextInput
           style={styles.input}
-          placeholder="Correo electrónico"
+          placeholder="email address"
           keyboardType="email-address"
           onChangeText={(e) => {
             setSession((oldData) => ({
@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Contraseña"
+          placeholder="password"
           onChangeText={(e) => {
             setSession((oldData) => ({
               ...oldData,
@@ -95,14 +95,14 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           }}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Home")}>
           <Text
             style={[
               styles.buttonText,
               { fontFamily: 'LeagueSpartan_800ExtraBold' },
             ]}
           >
-            Iniciar sesión
+            Log In
           </Text>
         </TouchableOpacity>
         <View style={styles.footer}>
@@ -112,7 +112,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
               { fontFamily: 'LeagueSpartan_800ExtraBold' },
             ]}
           >
-            ¿Olvidaste tu contraseña?
+            Forgot your Password?
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text
@@ -227,5 +227,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     position: 'absolute',
     bottom: 0,
+    
+
   },
 });

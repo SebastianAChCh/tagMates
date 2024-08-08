@@ -50,7 +50,7 @@ const Menu = ({ navigation }: { navigation: any }) => {
       <RoutesIcons
         navigation={navigation}
         route="Profile"
-        src={require('../assets/images/blankProf.png')}
+        src={require('../assets/images/blankProf2.png')}
       />
     </View>
   );
@@ -72,9 +72,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     bottom: 20,
-    left: '5%',
-    right: '5%',
+    alignContent: 'center',
+    alignSelf: 'center'
   },
+  
   imgMin: {
     width: 35,
     height: 35,

@@ -10,7 +10,7 @@ const RoutesIcons = ({ navigation, src, route }: { navigation: any; src: ImageSo
                     resizeMode="stretch"
                 />
             </TouchableOpacity>
-            <Text style={styles.textMin}>{route}</Text>
+            <Text style={route === "Profile" ? styles.textProf: styles.textMin}>{route}</Text>
         </View>
     );
 };
@@ -37,18 +37,28 @@ const styles = StyleSheet.create({
     imgMin: {
         width: 35,
         height: 35,
+        bottom: 3
     },
 
     imgRed: {
         width: 35,
         height: 35,
-        borderRadius: 100
+        borderRadius: 100,
+        right: 7,
+        bottom: 2
+        
     },
 
     textMin: {
         fontSize: 10,
-        fontFamily: 'Custom',
         color: 'black',
+    },
+
+    textProf: {
+        fontSize: 10,
+        color: 'black',
+        right: 6
+
     },
 });
 

@@ -1,5 +1,6 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
+
 const Header = ({ navigation, title }: { navigation: any; title: string }) => {
   return (
     <View style={styles.headerContainer}>
@@ -38,11 +39,14 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
     color: '#00A19D',
+    alignSelf: 'center',
+    top: 3
   },
 
   image: {
     width: 32,
     height: 25,
+    alignSelf: 'center',
   },
 
   margin: {
