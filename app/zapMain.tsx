@@ -7,11 +7,12 @@ import {
   Platform,
   StatusBar,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import ProfileCard from '../components/ProfileCard';
 // import ImageCarousel from '../components/Carrusel';
 
-export default function Zaps() {
+export default function Zaps({ navigation }: { navigation: any }) {
   const handleZap = () => {
     console.log('Zap!');
   };
@@ -21,13 +22,15 @@ export default function Zaps() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+    <View >
       <View style={styles.header}>
         <Text
           style={[styles.title, { fontFamily: 'LeagueSpartan_800ExtraBold' }]}
         >
           Profile
         </Text>
+      <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
         <Image
           source={require('../assets/images/chat.png')}
           style={{
@@ -36,6 +39,7 @@ export default function Zaps() {
             bottom: 4,
           }}
         />
+      </TouchableOpacity>
       </View>
       {/* <ImageCarousel/> */}
 
@@ -54,6 +58,7 @@ export default function Zaps() {
         </TouchableOpacity>
       </View>
     </View>
+    </SafeAreaView>
   );
 }
 
