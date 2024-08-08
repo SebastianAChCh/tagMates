@@ -155,6 +155,7 @@ const MatesScreen = ({ navigation }: { navigation: any }) => {
           renderItem={renderRequestItem}
         />
       </View>
+      <Menu navigation={navigation} />
     </SafeAreaView>
   );
 };

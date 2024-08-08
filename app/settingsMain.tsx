@@ -3,6 +3,9 @@ import {
   useFonts,
 } from '@expo-google-fonts/league-spartan';
 import React, { useEffect, useMemo, useState } from 'react';
+<<<<<<< HEAD
+import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
+=======
 import {
   Image,
   SafeAreaView,
@@ -14,6 +17,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
 import SettingIcon from '../components/SettingIcon';
 import { useAuth } from '../providers/Authentication';
 import Header from '../components/Header';
@@ -72,8 +76,16 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
+<<<<<<< HEAD
+      
+      <Header title='Settings' navigation={navigation}/>
+      <ScrollView style={styles.scrollView}>
+      
+
+=======
       <Header title="Settings" navigation={navigation} />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
         <View style={styles.boxG}>
           <SettingIcon
             handleClick={() => {}}
@@ -168,7 +180,13 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           />
         </View>
       </ScrollView>
+<<<<<<< HEAD
+
       <Menu navigation={navigation} />
+      
+=======
+      <Menu navigation={navigation} />
+>>>>>>> 543f863353f76b3571ba1c35d55434a92539412f
     </SafeAreaView>
   );
 };
