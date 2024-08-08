@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Header from '../components/Header';
+import Menu from '../components/Menu'
 
 const HealthScreen = ({ navigation }: { navigation: any }) => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -36,7 +37,8 @@ const HealthScreen = ({ navigation }: { navigation: any }) => {
     <SafeAreaView style={styles.AndroidSafeArea}>
       <Header title="Health" navigation={navigation} />
       <ScrollView style={styles.scrollView}>
-        <View style={styles.margin}>
+
+      {Platform.OS !== 'ios' ? (<View style={styles.margin}>
           <View style={styles.box}>
             <Image
               source={require('../assets/images/healthR.png')}
@@ -67,11 +69,49 @@ const HealthScreen = ({ navigation }: { navigation: any }) => {
             </View>
           </View>
         </View>
+      ) : (
+        <View style={styles.margin}>
+          <View style={styles.boxios}>
+            <Image
+              source={require('../assets/images/healthR.png')}
+              style={styles.imageios}
+            />
+          </View>
+          <View style={styles.margin2}>
+            <View style={styles.box2ios}>
+              <Image
+                source={require('../assets/images/Termometer.png')}
+                style={styles.image2ios}
+              />
+              <Image
+                source={require('../assets/images/bars.png')}
+                style={styles.image3ios}
+              />
+            </View>
+
+            <View style={styles.box2ios}>
+              <Image
+                source={require('../assets/images/oxygen.png')}
+                style={styles.image2ios}
+              />
+              <Image
+                source={require('../assets/images/bars.png')}
+                style={styles.image3ios}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+
+        
         <Text style={styles.headerTitle}>Resume</Text>
 
         <Text style={styles.text}>Tus Signos Vitales....</Text>
       </ScrollView>
+      <Menu navigation={navigation} />
     </SafeAreaView>
+
+   
   );
 };
 
@@ -116,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     borderColor: '#00A19D',
-    borderWidth: 2,
+    borderWidth: 1,
   },
 
   box2: {
@@ -125,7 +165,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     borderColor: '#00A19D',
-    borderWidth: 2,
+    borderWidth: 1,
+    flexDirection: 'row',
+  },
+
+  boxios: {
+    width: 180,
+    height: 250,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    borderColor: '#00A19D',
+    borderWidth: 1.2,
+  },
+
+  box2ios: {
+    width: 188,
+    height: 115,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    borderColor: '#00A19D',
+    borderWidth: 1.2,
     flexDirection: 'row',
   },
 
@@ -138,6 +197,15 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
+  imageios: {
+    width: 160,
+    height: 140,
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 32,
+    marginLeft: 10,
+  },
+
   image2: {
     width: 40,
     height: 50,
@@ -147,13 +215,31 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
 
+  image2ios: {
+    width: 50,
+    height: 60,
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 26,
+    marginLeft: 15,
+  },
+
   image3: {
     width: 80,
     height: 50,
     position: 'absolute',
     bottom: 0,
+    marginBottom: 18,
+    marginLeft: 70,
+  },
+
+  image3ios: {
+    width: 80,
+    height: 50,
+    position: 'absolute',
+    bottom: 0,
     marginBottom: 22,
-    marginLeft: 55,
+    marginLeft: 90,
   },
 });
 

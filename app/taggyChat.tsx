@@ -16,6 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as React from 'react';
 import Header from '../components/Header';
+import Menu from '../components/Menu'
 
 interface Message {
   id: number;
@@ -85,6 +86,7 @@ const TaggyScreen = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+      <Menu navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     backgroundColor: '#fff',
+    marginBottom: 90
   },
   input: {
     flex: 1,

@@ -1,7 +1,6 @@
 import { LeagueSpartan_800ExtraBold, useFonts } from '@expo-google-fonts/league-spartan';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, SafeAreaView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
-import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View, Platform, StatusBar } from 'react-native';
 import SettingIcon from '../components/SettingIcon';
 import { useAuth } from '../providers/Authentication';
 import Header from '../components/Header';
@@ -61,7 +60,7 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <GestureHandlerRootView>
+      
       <Header title='Settings' navigation={navigation}/>
       <ScrollView style={styles.scrollView}>
       
@@ -108,8 +107,8 @@ const SettingsScreen = ({ navigation } : {navigation : any}) => {
         </View>
       </ScrollView>
 
-      <Menu />
-      </GestureHandlerRootView>
+      <Menu navigation={navigation} />
+      
     </SafeAreaView>
   );
 };

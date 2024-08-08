@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Platform, StatusBar, View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Header from '../components/Header';
+import Menu from '../components/Menu'
 
 const MatesScreen = ({navigation}: {navigation: any}) => {
   const [requests, setRequests] = useState([
@@ -52,6 +53,7 @@ const MatesScreen = ({navigation}: {navigation: any}) => {
           renderItem={renderRequestItem}
         />
       </View>
+      <Menu navigation={navigation} />
     </SafeAreaView>
   );
 };
