@@ -8,7 +8,7 @@ const SettingIcon = ({ src, route, icon }: { src: ImageSourcePropType, route: st
                 <Image source={src}
                     style={styles.image} />
                 <Text style={styles.optionText}>{route}</Text>
-                <Icon name={icon} size={15} color="#000" />
+                <Icon name={icon} size={15} color="#B2AEB1" />
             </View>
         </TouchableOpacity>
     )
@@ -16,20 +16,22 @@ const SettingIcon = ({ src, route, icon }: { src: ImageSourcePropType, route: st
 
 const styles = StyleSheet.create({
     image: {
-        height: 35,
-        width: 35,
-        borderRadius: 5
+        height: 32,
+        width: 32,
+        borderRadius: 7
     },
     optionItem: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-        paddingVertical: 10
+        paddingVertical: 10,
+        padding: 15
     },
     optionText: {
         flex: 1,
         marginLeft: 10,
-        fontSize: 16
+        fontSize: 16,
+        
     },
 });
 
