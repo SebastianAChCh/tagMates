@@ -25,31 +25,19 @@ export const loadContacts = async (req: Request, res: Response) => {
             })
         );
 
-        return res.json({
-            status: 200,
-            contactsLoaded: contactsInfo,
-        });
+        return res.status(200).json({ status: 200, contactsLoaded: contactsInfo, });
     } catch (error) {
-        return res.json({
-            status: 500,
-            error
-        });
+        return res.status(500).json({ status: 500, error });
     }
 };
 
-export const saveContact = (req: Request, res: Response) => {
+export const saveContact = async (req: Request, res: Response) => {
     const contacts = new Contacts();
     try {
-        contacts.saveContacts({ email: req.body.email, user: req.body.user });
+        await contacts.saveContacts({ email: req.body.email, user: req.body.user });
 
-        return res.json({
-            status: 200,
-            message: 'Contact saved successfully'
-        });
+        return res.status(200).json({ status: 200, message: 'Contact saved successfully' });
     } catch (error) {
-        return res.json({
-            status: 200,
-            error
-        });
+        return res.status(500).json({ status: 500, error });
     }
 };

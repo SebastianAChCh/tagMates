@@ -1,9 +1,8 @@
 import OpenAI from 'openai';
 import { dbRealTime as db } from '../configurations/firebaseAdmin';
-import { NewCoordinates, CalculateDistance, Coordinates, updateProximityState, tagsAnalyze } from '../types/Positions';
+import { NewCoordinates, CalculateDistance, updateProximityState, tagsAnalyze } from '../types/Positions';
 import { UsersModel } from '../types/Users';
 import { Users } from './Users.service';
-import { projectId } from '../configurations/conf';
 
 export class Positions {
     private UserMethods: Users;

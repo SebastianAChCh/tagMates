@@ -9,13 +9,9 @@ export const userInformation = async (req: Request, res: Response) => {
     try {
         const informationUser = await userInformation.getUser(email);
 
-        if (typeof informationUser === 'string') {
-            return res.json({ status: 404, error: informationUser });
-        }
-
-        return res.json({ status: 200, information: informationUser });
+        return res.status(200).json({ status: 200, information: informationUser });
     } catch (error: any) {
-        return res.json({ status: 500, error: error.message });
+        return res.status(500).json({ status: 500, error: error.message });
     }
 }
 

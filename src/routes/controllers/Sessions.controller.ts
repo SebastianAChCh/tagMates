@@ -5,6 +5,12 @@ import { getDataSession } from '../../types/Users';
 import { NODE_ENV, SECRET_KEY } from '../../configurations/conf';
 import { Token } from '../../services/Token.service';
 
+export const logOut = (req: Request, res: Response) => {
+  res.cookie('access_token', '', { expires: new Date(0) });
+
+  return res.json({ message: 'cookie deleted' });
+}
+
 export const logIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const userMethods = new Users(null);

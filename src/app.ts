@@ -75,7 +75,12 @@ const userCoord = (users: UsersModel, socket: Socket) => {
   const position = new Positions();
 
   Users.map(async (user) => {
-    const coord = await position.getCoordinatesUser(user.user);
+    let coord: any;
+    try {
+      coord = await position.getCoordinatesUser(user.user);
+    } catch (error) {
+      console.error(error);
+    }
 
     //coordinates1 is the current positions of every user, and coordinates2 is the current positions of the user who has moved of their prev pos
     if (users.coordinates && coord && typeof coord !== 'string' && coord.range && coord.coordinates) {
@@ -124,7 +129,6 @@ socketIo.on('connection', (serverIo: Socket) => {
   //when the user send the request it'll be sent to socket.io and will be send through it to tell at the user if is connected in that moment that a new request has came otherwise
   //the request will be saved so that the user can accepted or rejected
   serverIo.on('Request', (data: RequestsType) => {
-    let acceptRequest: string = '';
     Users.forEach(user => {
       if (user.user === data.receiver) {
         socketIo.to(user.socketId).emit('RequestUser', { data });
@@ -162,12 +166,15 @@ socketIo.on('connection', (serverIo: Socket) => {
     const TaggyMethods = new Taggy();
     let responseMessage: any;
     (async () => {
-      responseMessage = await TaggyMethods.getMessage(message);
+      try {
+        responseMessage = await TaggyMethods.getMessage(message);
+      } catch (error) {
+        console.error(error);
+      }
     })();
 
     Users.forEach(user => {
       if (user.user === message.user) {
-        console.log('kajsdhfajklshd');
         socketIo.to(user.socketId).emit('ResponseTaggy', responseMessage);
       }
     })

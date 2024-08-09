@@ -41,8 +41,15 @@ export class Contacts {
 
     public async saveContacts(contact: ContactsType) {
         const UserInformation = new Users(null);
-        const userInfo: string | UsersModel = await UserInformation.getUser(contact.user);
-        if (typeof userInfo === 'string') return userInfo; //verify if the data was sent correctly or there was an error
+        let userInfo: UsersModel | string;
+
+        try {
+            userInfo = await UserInformation.getUser(contact.user);
+            if (typeof userInfo === 'string') throw new Error(userInfo);
+        } catch (error: any) {
+            console.error('there was an error', error);
+            throw new Error(error.message);
+        }
 
         try {
             await db.collection('Contacts').doc(contact.email).collection('Users').add({ email: contact.user, name: userInfo.fullname, photo: userInfo.avatar_path });

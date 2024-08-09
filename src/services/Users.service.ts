@@ -72,10 +72,12 @@ export class Users {
 
   public async createUser(): Promise<getDataSession> {
     if (this.info_users.email) {
-      const userInfo = await this.getUser(this.info_users.email);
+      const userInfo: any = await this.getUser(this.info_users.email);
+
       if (typeof userInfo !== 'string') {
         return 'The user already exist';
       } //check if the user does not exist yet
+
       this.validations(this.info_users); //check if there's a problem with the data that was given
 
       try {
@@ -125,7 +127,6 @@ export class Users {
 
         if (isPassCorrect) {
           const { password: _, ...userInformation } = userInfo;
-          console.log('paso por aqui');
 
           return {
             userInformation,
@@ -200,6 +201,8 @@ export class Users {
   //
 
   public async getUser(email: string): Promise<informationUser> {
+    if (typeof email !== 'string') throw new Error('Error loading the data');
+
     try {
       const response = await db.ref('Users').orderByChild('email').equalTo(email).once('value');
 

@@ -24,11 +24,12 @@ export class Taggy {
 
             return stream.choices[0].message.content;
         } catch (error: any) {
+            console.error(error);
             throw new Error(error.message);
         }
     }
 
-    private async saveMessage(Message: MessageTaggy) {
+    private async saveMessage(Message: MessageTaggy): Promise<void> {
         try {
             const userInformation = {
                 ...Message,
@@ -39,7 +40,6 @@ export class Taggy {
                 userInformation,
             });
 
-            return;
         } catch (error: any) {
             console.error(error);
             throw new Error(error.message);
